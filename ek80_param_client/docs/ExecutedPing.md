@@ -1,0 +1,11 @@
+# ExecutedPing
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**ping_information** | [**PingInformation**](PingInformation.md) |  | [optional] 
+**ping_configuration** | [**PingConfiguration**](PingConfiguration.md) |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
