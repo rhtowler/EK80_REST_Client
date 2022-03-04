@@ -1,11 +1,8 @@
+// protobuf protocol definition file for the Simrad EK80 REST API
+
 syntax = "proto3";
 
 import "google/protobuf/any.proto";
-// To build manually:
-//
-// From PowerShell:
-//cd 'D:\GitRepos\Simrad\Simrad.Winson\Source\Remoting Services\DataPublisher'
-// &"V:\Main\installed\x64-windows\tools\protobuf\protoc.exe" --proto_path=. --cpp_out=. sounder.proto
 
 package dp;
 
@@ -50,7 +47,7 @@ message BottomDetectionDatagram
 	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
 
 	string   data_source = 4;
-	
+
 	double	bottom_depth = 5;
 	double	reflectivity = 6;
 	double	vessel_log_distance = 7;
@@ -64,9 +61,9 @@ message IntegrationDatagram
 
 	uint32  ping_number = 2;
 	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
-	
+
 	string   data_source = 4;
-	
+
 	int32   status_value = 5;
 	double	sa = 6;
 	double	distance = 7;
@@ -98,7 +95,7 @@ message AdcpVelocityDatagram
 	repeated VelocityVector data_avg = 15;
 }
 
-message VelocityVector 
+message VelocityVector
 {
 	float x = 1;
 	float y = 2;
@@ -144,7 +141,7 @@ message BeamDataAdcpDatagram
 	uint32  datagram_size = 2;									// [byte] Total size of datagram
 
 	uint32  ping_number = 3;
-	uint64  ping_time = 4;			
+	uint64  ping_time = 4;
 
 	string   name = 5;
 
@@ -160,14 +157,14 @@ message QualityDataAdcpDatagram
 	uint32  datagram_size = 2;									// [byte] Total size of datagram
 
 	uint32  ping_number = 3;
-	uint64  ping_time = 4;			
+	uint64  ping_time = 4;
 
 	string name = 5;
 
 	float start_range = 6;
 	float total_range = 7;
 	int32 processing_result = 8;
-	
+
 	float percent_good = 9;
 	float correlation_factor_limit = 10;
 	float error_velocity_limit = 11;
@@ -183,7 +180,7 @@ message BottomDetectionAdcpDatagram
 	uint32  datagram_size = 2;									// [byte] Total size of datagram
 
 	uint32  ping_number = 3;
-	uint64  ping_time = 4;	
+	uint64  ping_time = 4;
 
 	bool is_valid_bottom_data = 5;
 	repeated float slant_range_to_bottom_backscatter = 6;
@@ -208,7 +205,7 @@ message SampleDataDatagram
 	float   total_range = 7;
 	float   center_frequency = 8;
 
-	enum SampleDataFormat 
+	enum SampleDataFormat
 	{
 		NoData = 0;
 		PowerAngle = 1;
@@ -242,7 +239,7 @@ message EchogramDatagram
 	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
 
 	string   data_source = 4;
-	
+
 	int64	start_index = 5;
 	int64	total_number_of_samples = 6;
 	float	start_range = 7;
@@ -260,7 +257,7 @@ message TSDetectionDatagram
 	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
 
 	string   data_source = 4;
-	
+
 	repeated float frequency_limits = 5;
 	repeated EchoTrace traces = 6;
 }
@@ -270,10 +267,10 @@ message TSDetectionChirpDatagram
 	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
 
 	uint32  ping_number = 2;
-	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601 
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
 
 	string   data_source = 4;
-	
+
 	repeated float frequency_limits = 5;
 	repeated EchoTraceChirp traces = 6;
 }
@@ -301,7 +298,7 @@ message EchoTrace
 	double sa = 6;
 }
 
-enum OperationMode 
+enum OperationMode
 {
 	Inactive= 0;
 	Normal = 1;
@@ -327,14 +324,14 @@ message	PingInfo
 {
 	uint32  ping_number = 1;
 	uint64  ping_time = 2;			// [100 nanoseconds] since 01.01 1601
-	double latitude = 3;				// [บ] signed decimal degrees, S = neg. value
-	double longitude = 4;			// [บ] signed decimal degrees, W = neg. value
-	float heading = 5;				// [บ]
-	float course = 6;				// [บ]
+	double latitude = 3;				// [ยบ] signed decimal degrees, S = neg. value
+	double longitude = 4;			// [ยบ] signed decimal degrees, W = neg. value
+	float heading = 5;				// [ยบ]
+	float course = 6;				// [ยบ]
 	float speed_over_ground = 7;	// [m/s]
 	float heave = 8;				// [m]
-	float pitch = 9;				// [บ]
-	float roll = 10;				// [บ]
+	float pitch = 9;				// [ยบ]
+	float roll = 10;				// [ยบ]
 }
 
 enum ExternalSyncMode
