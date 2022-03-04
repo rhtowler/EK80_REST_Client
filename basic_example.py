@@ -65,8 +65,13 @@ if __name__ == '__main__':
 
     import sys
 
-    #  define the server's IP address, username and password
-    server_address = 'localhost'
+    #  define the EK80 server's IP address
+    #
+    #  You can use "localhost" to connect to an instance running on the
+    #  same machine as this application but you will not will not be able
+    #  to create data subscriptions since the "endpoint" must be defined
+    #  with a valid non-loopback IP address
+    server_address = '192.168.0.131'
 
 
     app = QtCore.QCoreApplication(sys.argv)
