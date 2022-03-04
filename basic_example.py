@@ -11,7 +11,7 @@ class basic_example(QtCore.QObject):
 
     stopClient = QtCore.pyqtSignal()
 
-    def __init__(self, server_address, parent=None):
+    def __init__(self, server_address, clean_server=False, parent=None):
         #  initialize the superclass
         super(basic_example, self).__init__(parent)
 
@@ -20,6 +20,12 @@ class basic_example(QtCore.QObject):
         self.client.subscriptionData.connect(self.subscriptionDataAvailable)
         self.client.cleanupComplete.connect(self.clientStopped)
         self.stopClient.connect(self.client.cleanup_client)
+
+        #  check if we need to wipe all of the subscriptions (and endpoints)
+        #  from the server. This is sometimes needed while developing client
+        #  apps after they crash and leave their bits around on the server.
+        if clean_server:
+            self.client.cleanup_server()
 
         #  get this started...
         QtCore.QTimer.singleShot(0, self.startApp)
@@ -45,6 +51,7 @@ class basic_example(QtCore.QObject):
         self.stopClient.emit()
 
 
+    @QtCore.pyqtSlot()
     def clientStopped(self):
 
         print("Client cleanup complete.")
@@ -59,6 +66,8 @@ class basic_example(QtCore.QObject):
         if data_type == 'bottom_detection':
             #  print the results
             print(data)
+
+
 
 
 def exitHandler(a,b=None):
@@ -93,7 +102,6 @@ def signal_handler(*args):
     return True
 
 
-
 if __name__ == '__main__':
     import sys
     import argparse
@@ -101,6 +109,12 @@ if __name__ == '__main__':
     #  define the default EK80 server IP address. If an address is not passed
     #  on the command line, this address will be used
     server_address = '192.168.0.131'
+
+    #  by default we will not "clean" all of the subscriptions and endpoints
+    #  from the server. Normally you wouldn't want or need to do this but during
+    #  application development your application may crash and not clean up
+    #  after itself. When this happens, you will not be able to
+    clean_server = False
 
     #  create a state variable to track if the user typed ctrl-c to exit
     ctrlc_pressed = False
@@ -121,13 +135,17 @@ if __name__ == '__main__':
     #  parse the command line arguments
     parser = argparse.ArgumentParser(description='Example showing a simple usage of the ek80 REST client.')
     parser.add_argument("-s", "--server", help="Specify the EK80 server IP")
+    parser.add_argument("-c", "--clean", help="Set to True to remove all server subscriptions before running.")
     args = parser.parse_args()
     if (args.server):
         server_address = str(args.server)
+    if (args.clean):
+        clean_server = True
 
     #  create an instance of QCoreApplication and and instance of the our example application
     app = QtCore.QCoreApplication(sys.argv)
-    example_app = basic_example(server_address, parent=app)
+    example_app = basic_example(server_address, clean_server=clean_server,
+            parent=app)
 
     #  and start the event loop
     sys.exit(app.exec_())

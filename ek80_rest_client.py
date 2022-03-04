@@ -35,7 +35,6 @@
 import uuid
 import datetime
 import zmq
-import weakref
 import ek80_data_client
 import ek80_param_client
 from ek80_data_client.rest import ApiException
@@ -48,7 +47,6 @@ class ek80_rest_client(QtCore.QObject):
 
     #  set the zmq message polling interval in ms
     ZMQ_POLL_INTERVAL = 10
-
 
     #  define our signals
     subscriptionData = QtCore.pyqtSignal(object, str, dict)
@@ -71,7 +69,7 @@ class ek80_rest_client(QtCore.QObject):
         self.endpoints = {}
         self.subscriptions = {}
         self.n_subscriptions = 0
-        self.next_server_port = 24261
+        self.next_server_port = 24240
         self.server_address = server_address
 
         #  THIS IS A HACK - THE SWAGGER CLIENTS CAN'T CONNECT WITH A "REAL" IP
@@ -90,9 +88,6 @@ class ek80_rest_client(QtCore.QObject):
         self.poll_timer = QtCore.QTimer(self)
         self.poll_timer.timeout.connect(self.poll_zmq_messages)
 
-        #  create a finalizer to ensure we clean up regardless of how we exit
-        #self.finalizer = weakref.finalize(self, self.cleanup, self)
-
 
     def get_channels(self):
         '''
@@ -110,7 +105,8 @@ class ek80_rest_client(QtCore.QObject):
         return channels
 
 
-    def delete_bottom_detection_subscription(self, sub_id, cleanup=False):
+    def delete_bottom_detection_subscription(self, sub_id, endpoint_id=None,
+            cleanup=False):
         '''
         delete_bottom_detection_subscription deletes the specified bottom
         detection subscription. It also disconnects the subscription from
@@ -128,35 +124,43 @@ class ek80_rest_client(QtCore.QObject):
             ValueError: Raises ValueError if the subscription id doesn't exist or if
                         the subscription is not a bottom detection subscription.
         '''
-
         #  check if this is a valid subscription and if it is a bottom detection sub.
-        if sub_id not in self.subscriptions:
-            raise ValueError('%i is not a valid subscription id' % (sub_id))
-        if self.subscriptions[sub_id]['type'] != 'bottom':
-            raise ValueError('Error deleting bottom detector subscription. ' +
-                    'Subscription %i is not a bottom detection subscription.' % (sub_id))
+        #  we skip this check if we're cleaning up
+        if not cleanup:
+            if sub_id not in self.subscriptions:
+                raise ValueError('%i is not a valid subscription id' % (sub_id))
+            if self.subscriptions[sub_id]['type'] != 'bottom':
+                raise ValueError('Error deleting bottom detector subscription. ' +
+                        'Subscription %i is not a bottom detection subscription.' % (sub_id))
+
+        #  if we aren't given an endpoint - get it from the subscriptions dict
+        if endpoint_id is None:
+            endpoint_id = self.subscriptions[sub_id]['endpoint_id']
 
         #  create an instance of the bottom detections subs api
         api_instance = ek80_data_client.BottomDetectionSubscriptionsApi(self.data_api_client)
 
         #  remove the subscription from its endpoint
         api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
-        endpoint_id = self.subscriptions[sub_id]['endpoint_id']
-        api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
 
-        #  update the endpoint's subscriptions list
-        self.endpoints[endpoint_id]['subscriptions'].remove(sub_id)
+        try:
+            api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
+        except:
+            pass
 
         #  create an instance of the bottom detections subs api
         api_instance = ek80_data_client.BottomDetectionSubscriptionsApi(self.data_api_client)
 
         #  delete the bottom detection subscription
-        api_instance.delete_bottom_detection_subscription(sub_id)
+        try:
+            api_instance.delete_bottom_detection_subscription(sub_id)
+        except:
+            pass
 
-        #  and remove the subscription from our subscriptions dict. If we're
-        #  cleaning up, we are iterating thru the dict and can't delete here
-        #  and will do it in the cleanup method.
+        #  update the endpoint's subscriptions list and remove the subscription
+        #  from our subscriptions dict.
         if not cleanup:
+            self.endpoints[endpoint_id]['subscriptions'].remove(sub_id)
             del self.subscriptions[sub_id]
 
 
@@ -373,7 +377,19 @@ class ek80_rest_client(QtCore.QObject):
                     print('New message type: ' +  msg[0].decode("utf-8"))
 
 
+    @QtCore.pyqtSlot()
     def cleanup_client(self):
+        '''
+        cleanup_client should be called when you're done using the client
+        to ensure that all of the client's subscriptions and endpoints
+        are deleted from the server.
+
+        If you do not call this method, or your application crashes without
+        calling it, any subscriptions and endpoints you created will remain
+        active on the server and the endpoint address will be unavailable
+        for new endpoints.
+
+        '''
 
         #  stop the polling timer if it is running
         if self.poll_timer.isActive():
@@ -391,6 +407,54 @@ class ek80_rest_client(QtCore.QObject):
         self.endpoints = {}
 
         self.cleanupComplete.emit()
+
+
+    def cleanup_server(self):
+        '''
+        cleanup_server removes ALL subscriptions and endpoints on a server.
+        A properly working client application should clean up after itself
+        and you should never need to call this method. But during development
+        it is common for your application to crash, leaving subscriptions
+        and endpoints strewn about the server like so much flotsam on the
+        beach. You can call this method before making any subscriptions to
+        clean these up.
+
+        Returns:
+            None
+
+        '''
+
+        #  stop the polling timer if it is running
+        if self.poll_timer.isActive():
+            self.poll_timer.stop()
+
+        #  create an instance of the CommunicationEndPoints API
+        api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
+
+        #  get a list of all active endpoints
+        endpoints = api_instance.get_active_communication_end_points()
+
+        #  worth thru the endpoints
+        for endpoint in endpoints:
+            #  get the endpoint id
+            endpoint_id = endpoint.communication_end_point_id
+
+            #  get a list of subs associated with this endpoint
+            subscriptions = api_instance.get_subscriptions_by_end_point(endpoint_id)
+
+            #  work thru the subscriptions, deleting them as we go
+            for sub in subscriptions:
+                if sub.subscription_type == 'bottom detection':
+                    self.delete_bottom_detection_subscription(sub.subscription_id,
+                            endpoint_id=endpoint_id, cleanup=True)
+                else:
+                    print("New sub type found: " + sub.subscription_type)
+
+            #  and delete the endpoint
+            api_instance.delete_communication_end_point(endpoint_id)
+
+        self.subscriptions = {}
+        self.endpoints = {}
 
 
     def delete_server_endpoint(self, endpoint_id):
