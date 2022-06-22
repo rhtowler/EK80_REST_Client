@@ -1,7 +1,7 @@
 # coding=utf-8
 #
 #     National Oceanic and Atmospheric Administration (NOAA)
-#     Alaskan Fisheries Science Center (AFSC)
+#     Alaska Fisheries Science Center (AFSC)
 #     Resource Assessment and Conservation Engineering (RACE)
 #     Midwater Assessment and Conservation Engineering (MACE)
 #
@@ -100,13 +100,12 @@ class ek80_rest_client(QtCore.QObject):
             channels = pca.ping_configuration_get_channels()
 
         except ApiException as e:
-            print("Exception when calling get_transceivers: %s\n" % e)
+            print("Exception when calling get_channels: %s\n" % e)
 
         return channels
 
 
-    def delete_bottom_detection_subscription(self, sub_id, endpoint_id=None,
-            cleanup=False):
+    def delete_bottom_detection_subscription(self, sub_id, cleanup=False):
         '''
         delete_bottom_detection_subscription deletes the specified bottom
         detection subscription. It also disconnects the subscription from
@@ -129,16 +128,12 @@ class ek80_rest_client(QtCore.QObject):
         if not cleanup:
             if sub_id not in self.subscriptions:
                 raise ValueError('%i is not a valid subscription id' % (sub_id))
-            if self.subscriptions[sub_id]['type'] != 'bottom':
+            if self.subscriptions[sub_id]['type'] != 'bottom detection':
                 raise ValueError('Error deleting bottom detector subscription. ' +
                         'Subscription %i is not a bottom detection subscription.' % (sub_id))
 
-        #  if we aren't given an endpoint - get it from the subscriptions dict
-        if endpoint_id is None:
-            endpoint_id = self.subscriptions[sub_id]['endpoint_id']
-
-        #  create an instance of the bottom detections subs api
-        api_instance = ek80_data_client.BottomDetectionSubscriptionsApi(self.data_api_client)
+        #  get the endpoint ID
+        endpoint_id = self.subscriptions[sub_id]['endpoint_id']
 
         #  remove the subscription from its endpoint
         api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
@@ -192,7 +187,7 @@ class ek80_rest_client(QtCore.QObject):
         #  check if this is a valid subscription and if it is a bottom detection sub.
         if sub_id not in self.subscriptions:
             raise ValueError('%i is not a valid subscription id' % (sub_id))
-        if self.subscriptions[sub_id]['type'] != 'bottom':
+        if self.subscriptions[sub_id]['type'] != 'bottom detection':
             raise ValueError('Error getting bottom detector subscription configuration. ' +
                     'Subscription %i is not a bottom detection subscription.' % (sub_id))
 
@@ -240,7 +235,7 @@ class ek80_rest_client(QtCore.QObject):
         if sub_id not in self.subscriptions:
             raise ValueError('%i is not a valid subscription id' % (sub_id))
 
-        if self.subscriptions[sub_id]['type'] != 'bottom':
+        if self.subscriptions[sub_id]['type'] != 'bottom detection':
             raise ValueError('Error updating bottom detector subscription. Subscription ' +
                     '%i is not a bottom detection subscription' % (sub_id))
 
@@ -260,8 +255,7 @@ class ek80_rest_client(QtCore.QObject):
 
 
     def create_bottom_detection_subscription(self, channel_id, upper_detector_limit=10,
-            lower_detector_limit=1000, bottom_back_step=-50, name=None,
-            server_port=None, endpoint_id=None):
+            lower_detector_limit=1000, bottom_back_step=-50, name=None, endpoint_id=None):
         '''
 
         Args:
@@ -274,8 +268,6 @@ class ek80_rest_client(QtCore.QObject):
             bottom_back_step (TYPE):
                 Optional; DESCRIPTION Defaults to -50.
             name (TYPE):
-                Optional; DESCRIPTION Defaults to None.
-            server_port (TYPE):
                 Optional; DESCRIPTION Defaults to None.
             endpoint_id (TYPE):
                 Optional; DESCRIPTION Defaults to None.
@@ -293,7 +285,7 @@ class ek80_rest_client(QtCore.QObject):
         if name:
             name = str(name)
         else:
-            name = "%i-bottom_detection" % (self.n_subscriptions)
+            name = "%i-bottom detection" % (self.n_subscriptions)
 
         #  check if we've been provided an endpoint to use. If not, generate one.
         if endpoint_id not in self.endpoints:
@@ -322,7 +314,7 @@ class ek80_rest_client(QtCore.QObject):
 
             #  add this sub to the subscriptions dict
             self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
-                    'endpoint_id':endpoint_id, 'type':'bottom',
+                    'endpoint_id':endpoint_id, 'type':'bottom detection',
                     'cleanup':self.delete_bottom_detection_subscription}
 
             #  and connect the subscription to the endpoint
@@ -337,6 +329,9 @@ class ek80_rest_client(QtCore.QObject):
 
     def poll_zmq_messages(self):
         '''
+        poll_zmq_messages periodically checks all endpoints for available messages.
+        If messages are available, they are received, unpacked, and the message data
+        is emitted using the subscriptionData signal.
 
         Returns:
             None
@@ -357,7 +352,7 @@ class ek80_rest_client(QtCore.QObject):
                 #  process the message based on the type
                 if msg[0].decode("utf-8") == 'Bot.PB.v1':
                     #  set the type
-                    data_type = 'bottom_detection'
+                    data_type = 'bottom detection'
                     dg_dict = {}
 
                     #  create the protobuf object and decode
@@ -386,7 +381,7 @@ class ek80_rest_client(QtCore.QObject):
 
         If you do not call this method, or your application crashes without
         calling it, any subscriptions and endpoints you created will remain
-        active on the server and the endpoint address will be unavailable
+        active on the server and the endpoint address(es) will be unavailable
         for new endpoints.
 
         '''
@@ -557,4 +552,334 @@ class ek80_rest_client(QtCore.QObject):
         ts = (int(nt_time) - d) / 10000000.0
 
         return datetime.datetime.fromtimestamp(ts)
+
+
+
+    def delete_echogram_subscription(self, sub_id, cleanup=False):
+        '''
+        delete_echogram_subscription deletes the specified echogram subscription.
+        It also disconnects the subscription from its endpoint. IT DOES NOT
+        DELETE THE ENDPOINT.
+
+        Args:
+            sub_id (int):
+                The subscription ID of the echogram subscription
+                you are deleting.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: Raises ValueError if the subscription id doesn't exist or if
+                        the subscription is not a echogram subscription.
+        '''
+        #  check if this is a valid subscription and if it is a bottom detection sub.
+        #  we skip this check if we're cleaning up
+        if not cleanup:
+            if sub_id not in self.subscriptions:
+                raise ValueError('%i is not a valid subscription id' % (sub_id))
+            if self.subscriptions[sub_id]['type'] != 'echogram':
+                raise ValueError('Error deleting echogram subscription. ' +
+                        'Subscription %i is not an echogram subscription.' % (sub_id))
+
+        #  get the endpoint ID
+        endpoint_id = self.subscriptions[sub_id]['endpoint_id']
+
+        #  remove the subscription from its endpoint
+        api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
+
+        try:
+            api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
+        except:
+            pass
+
+        #  create an instance of the echogram subs api
+        api_instance = ek80_data_client.EchogramSubscriptionsApi(self.data_api_client)
+
+        #  delete the echogram subscription
+        try:
+            api_instance.delete_echogram_subscription(sub_id)
+        except:
+            pass
+
+        #  update the endpoint's subscriptions list and remove the subscription
+        #  from our subscriptions dict.
+        if not cleanup:
+            self.endpoints[endpoint_id]['subscriptions'].remove(sub_id)
+            del self.subscriptions[sub_id]
+
+
+    def get_echogram_subscription(self, sub_id):
+        '''
+
+        Args:
+            sub_id (int):
+                The subscription ID of the echogram subscription
+                you are requesting the state of.
+
+        Returns:
+            Dictionary with the following fields:
+
+                    subscription_id (int)
+                    channel_id (str)
+                    subscription_name (str)
+                    subscriber_name (str)
+                    pixel_count (float)
+                    range (float)
+                    range_start (float)
+                    tvg_function (float)
+                    bottom_gain (float)
+                    tvg_type (str)
+                    bottom_tvg_type (str)
+                    echogram_type (str)
+                    compression_type (str)
+                    expansion_type (str)
+                    echogram_heave (int)
+                    echogram_ping_filter_state(int)
+                    echogram_min_pixel_value (float)
+                    echogram_transducer_depth(int)
+                    echogram_delay(int)
+
+
+        Raises:
+            ValueError: Raises ValueError if the subscription id doesn't exist or if
+                        the subscription is not a bottom detection subscription.
+
+        '''
+
+        #  check if this is a valid subscription and if it is a echogram sub.
+        if sub_id not in self.subscriptions:
+            raise ValueError('%i is not a valid subscription id' % (sub_id))
+        if self.subscriptions[sub_id]['type'] != 'echogram':
+            raise ValueError('Error getting echogram subscription configuration. ' +
+                    'Subscription %i is not an echogram subscription.' % (sub_id))
+
+        #  create an instance of the echogram sub api
+        api_instance = ek80_data_client.EchogramSubscriptionsApi(self.data_api_client)
+
+        #  and use it to get our subscription info
+        sub_spec = api_instance.get_echogram_subscription(sub_id)
+
+        #  create the return dict
+        settings = {'subscription_id':sub_id,
+                    'channel_id': sub_spec.channel_id,
+                    'subscription_name':sub_spec.subscription_name,
+                    'subscriber_name': sub_spec.subscriber_name,
+                    'pixel_count':sub_spec.settings.pixel_count,
+                    'range':sub_spec.settings.range,
+                    'range_start':sub_spec.settings.range_start,
+                    'tvg_function':sub_spec.settings.tvg_function,
+                    'bottom_gain':sub_spec.settings.bottom_gain,
+                    'tvg_type':sub_spec.settings.tvg_type,
+                    'bottom_tvg_type':sub_spec.settings.bottom_tvg_type,
+                    'echogram_type':sub_spec.settings.echogram_type,
+                    'compression_type':sub_spec.settings.compression_type,
+                    'expansion_type':sub_spec.settings.expansion_type,
+                    'echogram_heave':sub_spec.settings.echogram_heave,
+                    'echogram_ping_filter_state':sub_spec.settings.echogram_ping_filter_state,
+                    'echogram_min_pixel_value':sub_spec.settings.echogram_min_pixel_value,
+                    'echogram_transducer_depth':sub_spec.settings.echogram_transducer_depth,
+                    'echogram_delay':sub_spec.settings.echogram_delay,
+                   }
+
+        return settings
+
+
+    def update_echogram_subscription(self, sub_id, pixel_count=500,
+            range=100, range_start=-50, tvg_function=20, bottom_gain=0,
+            tvg_type='sv', bottom_tvg_type='none', echogram_type='surface',
+            compression_type='mean', expansion_type='interpolate', echogram_heave=1,
+            echogram_ping_filter_state=0, echogram_min_pixel_value=-100,
+            echogram_transducer_depth=1, echogram_delay=1):
+        '''
+
+        Args:
+            sub_id (TYPE):
+                DESCRIPTION
+            pixel_count (TYPE):
+                Optional; DESCRIPTION Defaults to 500.
+            range (TYPE):
+                Optional; DESCRIPTION Defaults to 100.
+            range_start (TYPE):
+                Optional; DESCRIPTION Defaults to -50.
+            tvg_function (TYPE):
+                Optional; DESCRIPTION Defaults to 20.
+            bottom_gain (TYPE):
+                Optional; DESCRIPTION Defaults to 0.
+            tvg_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'sv'.
+            bottom_tvg_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'none'.
+            echogram_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'surface'.
+            compression_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'mean'.
+            expansion_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'interpolate'.
+            echogram_heave (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+            echogram_ping_filter_state (TYPE):
+                Optional; DESCRIPTION Defaults to 0.
+            echogram_min_pixel_value (TYPE):
+                Optional; DESCRIPTION Defaults to -100.
+            echogram_transducer_depth (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+            echogram_delay (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: Raises ValueError if the subscription id doesn't exist or if
+                        the subscription is not a bottom detection subscription.
+        '''
+
+        if sub_id not in self.subscriptions:
+            raise ValueError('%i is not a valid subscription id' % (sub_id))
+
+        if self.subscriptions[sub_id]['type'] != 'echogram':
+            raise ValueError('Error updating echogram subscription. Subscription ' +
+                    '%i is not an echogram subscription' % (sub_id))
+
+        #  create a settings object
+        sub_settings = ek80_data_client.EchogramSettings()
+
+        #  set the various subscription settings
+        sub_settings.pixel_count = pixel_count
+        sub_settings.range = range
+        sub_settings.range_start = range_start
+        sub_settings.tvg_function = tvg_function
+        sub_settings.bottom_gain = bottom_gain
+        sub_settings.tvg_type = tvg_type
+        sub_settings.bottom_tvg_type = bottom_tvg_type
+        sub_settings.echogram_type = echogram_type
+        sub_settings.compression_type = compression_type
+        sub_settings.expansion_type = expansion_type
+        sub_settings.echogram_heave = echogram_heave
+        sub_settings.echogram_ping_filter_state = echogram_ping_filter_state
+        sub_settings.echogram_min_pixel_value = echogram_min_pixel_value
+        sub_settings.echogram_transducer_depth = echogram_transducer_depth
+        sub_settings.echogram_delay = echogram_delay
+
+        #  create an instance of the echogram subs api
+        api_instance = ek80_data_client.EchogramSubscriptionsApi(self.data_api_client)
+
+        #  and use it to update our subscription
+        api_instance.update_echogram_subscription(sub_id, sub_settings)
+
+
+    def create_echogram_subscription(self, channel_id, pixel_count=500,
+            range=100, range_start=-50, tvg_function=20, bottom_gain=0,
+            tvg_type='sv', bottom_tvg_type='none', echogram_type='surface',
+            compression_type='mean', expansion_type='interpolate', echogram_heave=1,
+            echogram_ping_filter_state=0, echogram_min_pixel_value=-100,
+            echogram_transducer_depth=1,echogram_delay=1, name=None,
+            endpoint_id=None):
+        '''
+
+        Args:
+            channel_id (TYPE):
+                DESCRIPTION
+            pixel_count (TYPE):
+                Optional; DESCRIPTION Defaults to 500.
+            range (TYPE):
+                Optional; DESCRIPTION Defaults to 100.
+            range_start (TYPE):
+                Optional; DESCRIPTION Defaults to -50.
+            tvg_function (TYPE):
+                Optional; DESCRIPTION Defaults to 20.
+            bottom_gain (TYPE):
+                Optional; DESCRIPTION Defaults to 0.
+            tvg_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'sv'.
+            bottom_tvg_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'none'.
+            echogram_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'surface'.
+            compression_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'mean'.
+            expansion_type (TYPE):
+                Optional; DESCRIPTION Defaults to 'interpolate'.
+            echogram_heave (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+            echogram_ping_filter_state (TYPE):
+                Optional; DESCRIPTION Defaults to 0.
+            echogram_min_pixel_value (TYPE):
+                Optional; DESCRIPTION Defaults to -100.
+            echogram_transducer_depth (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+            echogram_delay (TYPE):
+                Optional; DESCRIPTION Defaults to 1.
+            name (TYPE):
+                Optional; DESCRIPTION Defaults to None.
+            endpoint_id (TYPE):
+                Optional; DESCRIPTION Defaults to None.
+
+        Returns:
+            None
+        '''
+
+        #  increment the subscription counter
+        self.n_subscriptions += 1
+
+        #  if a subscription name is provided, use it, otherwise create one.
+        #  The subscription name must be unique.
+        if name:
+            name = str(name)
+        else:
+            name = "%i-echogram" % (self.n_subscriptions)
+
+        #  check if we've been provided an endpoint to use. If not, generate one.
+        if endpoint_id not in self.endpoints:
+            endpoint_id = self.create_server_endpoint()
+
+        #  create an instance of the create subscription API
+        api_instance = ek80_data_client.CreateADataSubscriptionApi(self.data_api_client)
+
+        #  create our settings and spec objects
+        sub_settings = ek80_data_client.EchogramSettings()
+        sub_spec = ek80_data_client.EchogramSubscriptionSpecification()
+
+        #  set the various subscription settings
+        sub_settings.pixel_count = pixel_count
+        sub_settings.range = range
+        sub_settings.range_start = range_start
+        sub_settings.tvg_function = tvg_function
+        sub_settings.bottom_gain = bottom_gain
+        sub_settings.tvg_type = tvg_type
+        sub_settings.bottom_tvg_type = bottom_tvg_type
+        sub_settings.echogram_type = echogram_type
+        sub_settings.compression_type = compression_type
+        sub_settings.expansion_type = expansion_type
+        sub_settings.echogram_heave = echogram_heave
+        sub_settings.echogram_ping_filter_state = echogram_ping_filter_state
+        sub_settings.echogram_min_pixel_value = echogram_min_pixel_value
+        sub_settings.echogram_transducer_depth = echogram_transducer_depth
+        sub_settings.echogram_delay = echogram_delay
+
+        # populate the subscription spec
+        sub_spec.channel_id = channel_id
+        sub_spec.settings = sub_settings
+        sub_spec.subscriber_name = self.name
+        sub_spec.subscription_name = name
+
+        #  now try to create the subscription
+        try:
+            #  create the subscription
+            sub_id = api_instance.create_echogram_subscription(sub_spec)
+
+            #  add this sub to the subscriptions dict
+            self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
+                    'endpoint_id':endpoint_id, 'type':'echogram',
+                    'cleanup':self.delete_echogram_subscription}
+
+            #  and connect the subscription to the endpoint
+            subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')
+            api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
+            api_instance.add_subscription_to_end_point(endpoint_id, subscription_output_args)
+            self.endpoints[endpoint_id]['subscriptions'].append(sub_id)
+
+        except ApiException as e:
+            print("Exception when calling CreateADataSubscriptionApi->create_echogram_subscription: %s\n" % e)
 

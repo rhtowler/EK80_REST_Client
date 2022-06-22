@@ -1,0 +1,27 @@
+
+
+log_level: DEBUG
+
+echolog_ip: 127.0.0.1
+echolog_port: 2002
+
+local_port: None
+local_address: None
+
+
+
+#  bottom minimum search depth - IN DEPTH
+bot_detect_search_min: 15
+
+#  bottom search backstep in dB
+bot_detect_backstep_db: 35
+
+# Q telegram sample counts - must not exceed 714 total
+q_surface_upper_depth: 0
+q_surface_lower_depth: 500
+q_surface_count: 600
+q_bottom_count: 110
+
+
+
+
