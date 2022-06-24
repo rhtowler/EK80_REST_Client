@@ -1,5 +1,5 @@
 """
-QTelegramBlaster.py
+telegram_blaster.py
 
 This application creates bottom depth and echogram subscriptions for
 all channels and then broadcasts Q Telegrams derived from these data
@@ -9,6 +9,9 @@ on the network. This can be used to send data to Echolog500 for
 
 """
 
+import logging
+import collections
+import yaml
 from PyQt5 import QtCore
 import ek80_rest_client
 
@@ -21,17 +24,11 @@ class telegram_blaster(QtCore.QObject):
         #  initialize the superclass
         super(telegram_blaster, self).__init__(parent)
 
+        #  store our command line args
         self.config_file = config_file
+        self.clean_server = clean_server
 
-
-
-        #  check if we need to wipe all of the subscriptions (and endpoints)
-        #  from the server. This is sometimes needed while developing client
-        #  apps after they crash and leave their bits around on the server.
-        if clean_server:
-            self.client.cleanup_server()
-
-        #  get this started...
+        #  start things up after we get the event loop running by using a timer
         QtCore.QTimer.singleShot(0, self.startApp)
 
 
@@ -43,7 +40,7 @@ class telegram_blaster(QtCore.QObject):
         #  read the configuration file
         with open(self.config_file, 'r') as cf_file:
             try:
-                config = yaml.safe_load(cf_file)
+                self.configuration = yaml.safe_load(cf_file)
             except yaml.YAMLError as exc:
                 print('Error reading configuration file ' + self.config_file)
                 print('  Error string:' + str(exc))
@@ -53,46 +50,84 @@ class telegram_blaster(QtCore.QObject):
 
         #  create a logger to log to the console
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(config['log_level'])
+        self.logger.setLevel(self.configuration['application']['log_level'])
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(module)s - %(message)s')
         consoleLogger = logging.StreamHandler(sys.stdout)
         consoleLogger.setFormatter(formatter)
         self.logger.addHandler(consoleLogger)
 
-
-
         #  create an instance of the client and connect some signals
-        self.client = ek80_rest_client.ek80_rest_client(server_address=server_address)
+
+        self.logger.debug("Connecting to EK80 server at %s." %
+                self.configuration['application']['ek80_server_ip'])
+        self.client = ek80_rest_client.ek80_rest_client(server_address=
+                self.configuration['application']['ek80_server_ip'])
         self.client.subscriptionData.connect(self.subscriptionDataAvailable)
         self.client.cleanupComplete.connect(self.clientStopped)
         self.stopClient.connect(self.client.cleanup_client)
 
+        #  check if we need to wipe all of the subscriptions (and endpoints)
+        #  from the server. This is sometimes needed while developing client
+        #  apps after they crash and leave their bits around on the server.
+        if self.clean_server:
+            self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
+            self.client.cleanup_server()
+
 
         #  get the list of channels
         self.channels = self.client.get_channels()
-        print(self.channels)
+        chan_string = ', '.join(self.channels)
+        self.logger.debug("Channels found: %s", chan_string)
 
         self.bottom_sub_ids = []
-        for channel in self.channels:
-            self.bottom_sub_ids.append(self.client.create_bottom_detection_subscription(channel))
+        self.echogram_sub_ids = []
+        if len(self.channels) > 0:
+            for channel in self.channels:
+
+                add_channel, channel_config = self.get_channel_configuration(channel)
+
+                if add_channel:
+                    #  this channel has either an explicit entry or a "default"
+                    #  entry exists and will be used.
+                    self.logger.debug("Adding channel %s ", channel)
+
+                    #  add the bottom detection subscription
+                    bottom_detect_sub = self.client.create_bottom_detection_subscription(channel,
+                            upper_detector_limit=channel_config['upper_detector_limit'],
+                            lower_detector_limit=channel_config['lower_detector_limit'],
+                            bottom_back_step=channel_config['bottom_back_step'])
+                    self.bottom_sub_ids.append(bottom_detect_sub)
+
+                    #  add the surface echogram subscription
+                    echogram_sub = self.client.create_echogram_subscription(channel,
+                            pixel_count=channel_config['surface_echogram_count'],
+                            range=channel_config['surface_echogram_range'],
+                            range_start=channel_config['surface_echogram_start'])
+                    self.echogram_sub_ids.append(echogram_sub)
+
+                else:
+                    #  we're not adding this channel
+                    self.logger.debug("Channel %s not found in config file. Skipping.",
+                            channel)
 
         else:
-            print('No channels found. Exiting...')
+            #  no channels?
+            self.logger.critical("No channels found! Nothing to do so we're exiting...")
             QtCore.QCoreApplication.instance().quit()
             return
 
 
     def stopApp(self):
 
-        print("Cleaning up the client...")
+        self.logger.debug("Cleaning up the client...")
         self.stopClient.emit()
 
 
     @QtCore.pyqtSlot()
     def clientStopped(self):
 
-        print("Client cleanup complete.")
-        print("Application exiting...")
+        self.logger.debug("Client cleanup complete.")
+        self.logger.info("Application exiting...")
         QtCore.QCoreApplication.instance().quit()
         return
 
@@ -100,11 +135,63 @@ class telegram_blaster(QtCore.QObject):
     @QtCore.pyqtSlot(object, str, dict)
     def subscriptionDataAvailable(self, clientObj, data_type, data):
 
-        if data_type == 'bottom_detection':
+        if data_type == 'bottom detection':
             #  print the results
+            print(data)
+        elif data_type == 'echogram':
+            print(data)
+        else:
+            print('type: ', data_type)
             print(data)
 
 
+    def get_channel_configuration(self, channel_name):
+        '''get_channel_configuration returns a bool specifying if the channel should
+        be utilized and a dict containing any channel configuration parameters.
+
+        It first looks for channel specific entries, if that isn't found it checks
+        for a 'default' entry. If a channel specific entry doesn't exist and there
+        is no 'default' section, the channel is not used by the application.
+        '''
+
+        def update( d, u):
+            """
+            Update a nested dictionary or similar mapping.
+
+            Source: https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth
+            Credit: Alex Martelli / Alex Telon
+            """
+            for k, v in u.items():
+                if isinstance(v, collections.abc.Mapping):
+                    #  if a value is None, just assign the value, otherwise keep going
+                    if d.get(k, {}) is None:
+                        d[k] = v
+                    else:
+                        d[k] = update(d.get(k, {}), v)
+                else:
+                    d[k] = v
+            return d
+
+        add_channel = False
+
+        #  start with the default channel configuration
+        config = {}
+
+        # Look for a channel specific entry first
+        if channel_name in self.configuration['channels']:
+            #  update this channel's config with the channel specific settings
+            config = update(config, self.configuration['channels'][channel_name])
+            #  we add channels that are explicitly configured in the config file
+            add_channel = True
+
+        # If that fails, check for a default section
+        elif 'default' in self.configuration['channels']:
+            #  update this channel's config with the channels specific settings
+            config = update(config, self.configuration['channels']['default'])
+            #  we add all channels if there is a 'default' section in the config file
+            add_channel = True
+
+        return add_channel, config
 
 
 def exitHandler(a,b=None):

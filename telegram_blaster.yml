@@ -1,26 +1,138 @@
 
 
-log_level: DEBUG
+application:
 
-echolog_ip: 127.0.0.1
-echolog_port: 2002
-
-local_port: None
-local_address: None
+    ek80_server_ip: 127.0.0.1
+    local_udp_port: 15240
+    log_level: DEBUG
 
 
+clients:
+    client_ips: 127.0.0.1, 192.168.114.123
+    client_ports: 2002, 5002
 
-#  bottom minimum search depth - IN DEPTH
-bot_detect_search_min: 15
 
-#  bottom search backstep in dB
-bot_detect_backstep_db: 35
+channels:
 
-# Q telegram sample counts - must not exceed 714 total
-q_surface_upper_depth: 0
-q_surface_lower_depth: 500
-q_surface_count: 600
-q_bottom_count: 110
+    WBT 998500-15 ES18_ES:
+        #  bottom minimum search depth - IN DEPTH
+        upper_detector_limit: 15
+        lower_detector_limit: 1000
+        bottom_back_step: -50.0
+
+        #  bottom search backstep in dB
+        bot_detect_backstep_db: 35
+
+        # Q telegram sample counts - must not exceed 714 total
+        surface_echogram_start: 0
+        surface_echogram_range: 500
+        surface_echogram_count: 550
+        bottom_echogram_start: -10
+        bottom_echogram_range: 15
+        bottom_echogram_count: 100
+
+    WBT 978217-15 ES38-7_ES:
+        #  bottom minimum search depth - IN DEPTH
+        upper_detector_limit: 15
+        lower_detector_limit: 1000
+        bottom_back_step: -50.0
+
+        #  bottom search backstep in dB
+        bot_detect_backstep_db: 35
+
+        # Q telegram sample counts - must not exceed 714 total
+        surface_echogram_start: 0
+        surface_echogram_range: 500
+        surface_echogram_count: 550
+        bottom_echogram_start: -10
+        bottom_echogram_range: 15
+        bottom_echogram_count: 100
+
+#    WBT 978213-15 ES70-7C_ES:
+#        #  bottom minimum search depth - IN DEPTH
+#        upper_detector_limit: 15
+#        lower_detector_limit: 500
+#        bottom_back_step: -50.0
+#
+#        #  bottom search backstep in dB
+#        bot_detect_backstep_db: 35
+#
+#        # Q telegram sample counts - must not exceed 714 total
+#        surface_echogram_start: 0
+#        surface_echogram_range: 500
+#        surface_echogram_count: 550
+#        bottom_echogram_start: -10
+#        bottom_echogram_range: 15
+#        bottom_echogram_count: 100
+#
+#    WBT 976714-15 ES120-7C_ES:
+#        #  bottom minimum search depth - IN DEPTH
+#        upper_detector_limit: 15
+#        lower_detector_limit: 200
+#        bottom_back_step: -50.0
+#
+#        #  bottom search backstep in dB
+#        bot_detect_backstep_db: 35
+#
+#        # Q telegram sample counts - must not exceed 714 total
+#        surface_echogram_start: 0
+#        surface_echogram_range: 500
+#        surface_echogram_count: 550
+#        bottom_echogram_start: -10
+#        bottom_echogram_range: 15
+#        bottom_echogram_count: 100
+#
+#    WBT 978208-15 ES200-7C_ES:
+#            #  bottom minimum search depth - IN DEPTH
+#        upper_detector_limit: 15
+#        lower_detector_limit: 150
+#        bottom_back_step: -50.0
+#
+#        #  bottom search backstep in dB
+#        bot_detect_backstep_db: 35
+#
+#        # Q telegram sample counts - must not exceed 714 total
+#        surface_echogram_start: 0
+#        surface_echogram_range: 500
+#        surface_echogram_count: 550
+#        bottom_echogram_start: -10
+#        bottom_echogram_range: 15
+#        bottom_echogram_count: 100
+
+#    WBT 976726-15 ES333-7C_ES:
+#        #  bottom minimum search depth - IN DEPTH
+#        upper_detector_limit: 15
+#        lower_detector_limit: 50
+#        bottom_back_step: -50.0
+#
+#        #  bottom search backstep in dB
+#        bot_detect_backstep_db: 35
+#
+#        # Q telegram sample counts - must not exceed 714 total
+#        surface_echogram_start: 0
+#        surface_echogram_range: 500
+#        surface_echogram_count: 550
+#        bottom_echogram_start: -10
+#        bottom_echogram_range: 15
+#        bottom_echogram_count: 100
+#
+#    default:
+#
+#        #  bottom minimum search depth - IN DEPTH
+#        upper_detector_limit: 15
+#        lower_detector_limit: 1000
+#        bottom_back_step: -50.0
+#
+#        #  bottom search backstep in dB
+#        bot_detect_backstep_db: 35
+#
+#        # Q telegram sample counts - must not exceed 714 total
+#        surface_echogram_start: 0
+#        surface_echogram_range: 500
+#        surface_echogram_count: 550
+#        bottom_echogram_start: -10
+#        bottom_echogram_range: 15
+#        bottom_echogram_count: 100
 
 
 

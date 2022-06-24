@@ -32,9 +32,11 @@
 """
 
 
+import logging
 import uuid
 import datetime
 import zmq
+import numpy as np
 import ek80_data_client
 import ek80_param_client
 from ek80_data_client.rest import ApiException
@@ -47,6 +49,9 @@ class ek80_rest_client(QtCore.QObject):
 
     #  set the zmq message polling interval in ms
     ZMQ_POLL_INTERVAL = 10
+
+    # Create a constant to convert indexed power to power.
+    INDEX2POWER = (10.0 * np.log10(2.0) / 256.0)
 
     #  define our signals
     subscriptionData = QtCore.pyqtSignal(object, str, dict)
@@ -84,6 +89,9 @@ class ek80_rest_client(QtCore.QObject):
         self.data_client_config.host="http://" + server_address + ":" + str(data_server_port)
         self.data_api_client = ek80_data_client.ApiClient(configuration=self.data_client_config)
 
+        #  set up logging
+        self.logger = logging.getLogger(__name__)
+
         #  create a timer to poll the zero-mq subscriptions
         self.poll_timer = QtCore.QTimer(self)
         self.poll_timer.timeout.connect(self.poll_zmq_messages)
@@ -100,12 +108,13 @@ class ek80_rest_client(QtCore.QObject):
             channels = pca.ping_configuration_get_channels()
 
         except ApiException as e:
-            print("Exception when calling get_channels: %s\n" % e)
+            self.logger.error("Exception when calling get_channels: %s\n" % e)
 
         return channels
 
 
-    def delete_bottom_detection_subscription(self, sub_id, cleanup=False):
+    def delete_bottom_detection_subscription(self, sub_id, endpoint_id=None,
+            cleanup=False):
         '''
         delete_bottom_detection_subscription deletes the specified bottom
         detection subscription. It also disconnects the subscription from
@@ -133,14 +142,16 @@ class ek80_rest_client(QtCore.QObject):
                         'Subscription %i is not a bottom detection subscription.' % (sub_id))
 
         #  get the endpoint ID
-        endpoint_id = self.subscriptions[sub_id]['endpoint_id']
+        if endpoint_id is None:
+            endpoint_id = self.subscriptions[sub_id]['endpoint_id']
 
         #  remove the subscription from its endpoint
         api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
 
         try:
             api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
-        except:
+        except Exception as e:
+            self.logger.error("Error removing subscription from endpoint: %s" % e)
             pass
 
         #  create an instance of the bottom detections subs api
@@ -149,7 +160,8 @@ class ek80_rest_client(QtCore.QObject):
         #  delete the bottom detection subscription
         try:
             api_instance.delete_bottom_detection_subscription(sub_id)
-        except:
+        except Exception as e:
+            self.logger.error("Error deleting bottom detection subscription: %s" % e)
             pass
 
         #  update the endpoint's subscriptions list and remove the subscription
@@ -349,27 +361,61 @@ class ek80_rest_client(QtCore.QObject):
                 #  and the second is the serialized protobuf data
                 msg = self.endpoints[endpoint_id]['zmq_socket'].recv_multipart()
 
-                #  process the message based on the type
+                #  process the message based on the type - THIS MUST BE
+                #  EXTENDED AS NEW TYPES ARE ADDED TO THE CLIENT
                 if msg[0].decode("utf-8") == 'Bot.PB.v1':
-                    #  set the type
-                    data_type = 'bottom detection'
-                    dg_dict = {}
+                    try:
+                        #  set the type
+                        data_type = 'bottom detection'
+                        dg_dict = {}
 
-                    #  create the protobuf object and decode
-                    dg_data = ek80_datagrams_pb2.BottomDetectionDatagram()
-                    dg_data.ParseFromString(msg[1])
+                        #  create the protobuf object and decode
+                        dg_data = ek80_datagrams_pb2.BottomDetectionDatagram()
+                        dg_data.ParseFromString(msg[1])
 
-                    #  convert the message obj to a dict
-                    dg_dict = MessageToDict(dg_data)
+                        #  convert the message obj to a dict
+                        dg_dict = MessageToDict(dg_data)
 
-                    #  and convert the ping_time to a datetime
-                    dg_dict['pingTime'] = self.convert_nt_time(dg_dict['pingTime'])
+                        #  and convert the ping_time to a datetime
+                        dg_dict['pingTime'] = self.convert_nt_time(dg_dict['pingTime'])
 
-                    #  emit the data signal
-                    self.subscriptionData.emit(self, data_type, dg_dict)
+                        #  emit the data signal
+                        self.subscriptionData.emit(self, data_type, dg_dict)
+                    except:
+                        #  There was a problem parsing the datagram.
+                        #  For now we just drop datagrams that we can't parse
+                        pass
+
+                elif msg[0].decode("utf-8") == 'Eco.PB.v1':
+                    try:
+                        #  set the type
+                        data_type = 'echogram'
+                        dg_dict = {}
+
+                        #  create the protobuf object and decode
+                        dg_data = ek80_datagrams_pb2.EchogramDatagram()
+                        dg_data.ParseFromString(msg[1])
+
+                        #  convert the message obj to a dict
+                        dg_dict = MessageToDict(dg_data)
+
+                        #  and convert the ping_time to a datetime
+                        dg_dict['pingTime'] = self.convert_nt_time(dg_dict['pingTime'])
+
+                        dg_dict['data'] = (np.array(dg_dict['data'], dtype=np.single) *
+                                self.INDEX2POWER)
+
+                        #  emit the data signal
+                        self.subscriptionData.emit(self, data_type, dg_dict)
+                    except:
+                        #  There was a problem parsing the datagram.
+                        #  For now we just drop datagrams that we can't parse
+                        pass
 
                 else:
+                    #  This is an unknown type - print the type
                     print('New message type: ' +  msg[0].decode("utf-8"))
+                    print('You must add this type to the poll_zmq_messages() method of the EK80 client.')
 
 
     @QtCore.pyqtSlot()
@@ -439,11 +485,21 @@ class ek80_rest_client(QtCore.QObject):
 
             #  work thru the subscriptions, deleting them as we go
             for sub in subscriptions:
+                #  as we add new subscirption types, we need to expand this code
+                #  to handle deleting them.
+                print("removing sub: ", sub)
                 if sub.subscription_type == 'bottom detection':
                     self.delete_bottom_detection_subscription(sub.subscription_id,
                             endpoint_id=endpoint_id, cleanup=True)
+
+                elif sub.subscription_type == 'echogram':
+                    self.delete_echogram_subscription(sub.subscription_id,
+                            endpoint_id=endpoint_id, cleanup=True)
+
                 else:
-                    print("New sub type found: " + sub.subscription_type)
+                    print("New subscription type found: " + sub.subscription_type)
+                    print("ek80_rest_client.cleanup_server() NEEDS TO BE " +
+                            "UPDATED TO HANDLE THIS TYPE!")
 
             #  and delete the endpoint
             api_instance.delete_communication_end_point(endpoint_id)
@@ -555,7 +611,8 @@ class ek80_rest_client(QtCore.QObject):
 
 
 
-    def delete_echogram_subscription(self, sub_id, cleanup=False):
+    def delete_echogram_subscription(self, sub_id,  endpoint_id=None,
+            cleanup=False):
         '''
         delete_echogram_subscription deletes the specified echogram subscription.
         It also disconnects the subscription from its endpoint. IT DOES NOT
@@ -583,7 +640,8 @@ class ek80_rest_client(QtCore.QObject):
                         'Subscription %i is not an echogram subscription.' % (sub_id))
 
         #  get the endpoint ID
-        endpoint_id = self.subscriptions[sub_id]['endpoint_id']
+        if endpoint_id is None:
+            endpoint_id = self.subscriptions[sub_id]['endpoint_id']
 
         #  remove the subscription from its endpoint
         api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
@@ -770,7 +828,7 @@ class ek80_rest_client(QtCore.QObject):
 
 
     def create_echogram_subscription(self, channel_id, pixel_count=500,
-            range=100, range_start=-50, tvg_function=20, bottom_gain=0,
+            range=500, range_start=0, tvg_function=20, bottom_gain=0,
             tvg_type='sv', bottom_tvg_type='none', echogram_type='surface',
             compression_type='mean', expansion_type='interpolate', echogram_heave=1,
             echogram_ping_filter_state=0, echogram_min_pixel_value=-100,
@@ -782,11 +840,11 @@ class ek80_rest_client(QtCore.QObject):
             channel_id (TYPE):
                 DESCRIPTION
             pixel_count (TYPE):
-                Optional; DESCRIPTION Defaults to 500.
+                Optional; The number of total  Defaults to 500.
             range (TYPE):
-                Optional; DESCRIPTION Defaults to 100.
+                Optional; DESCRIPTION Defaults to 500.
             range_start (TYPE):
-                Optional; DESCRIPTION Defaults to -50.
+                Optional; DESCRIPTION Defaults to 0.
             tvg_function (TYPE):
                 Optional; DESCRIPTION Defaults to 20.
             bottom_gain (TYPE):
@@ -796,11 +854,11 @@ class ek80_rest_client(QtCore.QObject):
             bottom_tvg_type (TYPE):
                 Optional; DESCRIPTION Defaults to 'none'.
             echogram_type (TYPE):
-                Optional; DESCRIPTION Defaults to 'surface'.
+                Optional; surface, bottom, or trawl Defaults to 'surface'.
             compression_type (TYPE):
-                Optional; DESCRIPTION Defaults to 'mean'.
+                Optional; mean, peak Defaults to 'mean'.
             expansion_type (TYPE):
-                Optional; DESCRIPTION Defaults to 'interpolate'.
+                Optional; interpolation, copy Defaults to 'interpolate'.
             echogram_heave (TYPE):
                 Optional; DESCRIPTION Defaults to 1.
             echogram_ping_filter_state (TYPE):
@@ -839,7 +897,7 @@ class ek80_rest_client(QtCore.QObject):
 
         #  create our settings and spec objects
         sub_settings = ek80_data_client.EchogramSettings()
-        sub_spec = ek80_data_client.EchogramSubscriptionSpecification()
+
 
         #  set the various subscription settings
         sub_settings.pixel_count = pixel_count
@@ -858,11 +916,11 @@ class ek80_rest_client(QtCore.QObject):
         sub_settings.echogram_transducer_depth = echogram_transducer_depth
         sub_settings.echogram_delay = echogram_delay
 
-        # populate the subscription spec
-        sub_spec.channel_id = channel_id
-        sub_spec.settings = sub_settings
-        sub_spec.subscriber_name = self.name
-        sub_spec.subscription_name = name
+        #  the echogram sub spec requires that the optional init args be specified.
+        #  This is different from the bottom subscription. ?
+        sub_spec = ek80_data_client.EchogramSubscriptionSpecification(
+                channel_id=channel_id, settings=sub_settings,
+                subscription_name=name, subscriber_name=self.name)
 
         #  now try to create the subscription
         try:
