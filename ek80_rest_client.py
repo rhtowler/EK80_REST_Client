@@ -101,16 +101,36 @@ class ek80_rest_client(QtCore.QObject):
         '''
         get_channels returns a list containing the installed echosounder channels
         '''
+        pca = ek80_param_client.PingConfigurationApi(self.param_api_client)
+        return pca.ping_configuration_get_channels()
 
-        try:
 
-            pca = ek80_param_client.PingConfigurationApi(self.param_api_client)
-            channels = pca.ping_configuration_get_channels()
+    def get_navigation(self):
+        '''
+        get_navigation returns the current lat/lon, course, speed, heading, and vessel log
+        '''
+        osa = ek80_param_client.OwnshipApi()
+        return osa.ownship_get_navigation()
 
-        except ApiException as e:
-            self.logger.error("Exception when calling get_channels: %s\n" % e)
 
-        return channels
+    def get_drop_keel_offset(self):
+        '''
+        get_drop_keel_offset returns the current drop keel setting value and a bool
+        indicating the value is manually set.
+        '''
+        osa = ek80_param_client.OwnshipApi()
+        return osa.ownship_get_drop_keel_offset()
+
+
+    def set_drop_keel_offset(self, new_offset):
+        '''
+        set_drop_keel_offset sets the current drop keel value and a bool
+        indicating the value is manually set.
+        '''
+        osa = ek80_param_client.OwnshipApi()
+        dropkeel_settings = ek80_param_client.ManualSetting(current_value=new_offset,
+                is_manual=True)
+        osa.ownship_set_drop_keel_offset(dropkeel_settings)
 
 
     def delete_bottom_detection_subscription(self, sub_id, endpoint_id=None,
@@ -379,6 +399,13 @@ class ek80_rest_client(QtCore.QObject):
                         #  and convert the ping_time to a datetime
                         dg_dict['pingTime'] = self.convert_nt_time(dg_dict['pingTime'])
 
+                        #  convert subscription ID to int
+                        dg_dict['subscriptionId']  = int(dg_dict['subscriptionId'])
+
+                        #  at least with the initial 21.15 REST client, bottom detection
+                        # subscriptions return "test" as the dataSource - we'll fix that here
+                        dg_dict['dataSource'] = self.subscriptions[dg_dict['subscriptionId']]['channel_id']
+
                         #  emit the data signal
                         self.subscriptionData.emit(self, data_type, dg_dict)
                     except:
@@ -402,8 +429,15 @@ class ek80_rest_client(QtCore.QObject):
                         #  and convert the ping_time to a datetime
                         dg_dict['pingTime'] = self.convert_nt_time(dg_dict['pingTime'])
 
-                        dg_dict['data'] = (np.array(dg_dict['data'], dtype=np.single) *
-                                self.INDEX2POWER)
+                        #  convert subscription ID to int
+                        dg_dict['subscriptionId']  = int(dg_dict['subscriptionId'])
+
+                        #  convert data to numpy array
+                        dg_dict['data'] = np.array(dg_dict['data'], dtype=np.single)
+
+                        #  convert EK500 dB format?
+                        if not self.subscriptions[dg_dict['subscriptionId']]['return_db_format']:
+                             dg_dict['data'] *= self.INDEX2POWER
 
                         #  emit the data signal
                         self.subscriptionData.emit(self, data_type, dg_dict)
@@ -833,7 +867,7 @@ class ek80_rest_client(QtCore.QObject):
             compression_type='mean', expansion_type='interpolate', echogram_heave=1,
             echogram_ping_filter_state=0, echogram_min_pixel_value=-100,
             echogram_transducer_depth=1,echogram_delay=1, name=None,
-            endpoint_id=None):
+            endpoint_id=None, ek500_db_format=False):
         '''
 
         Args:
@@ -873,7 +907,10 @@ class ek80_rest_client(QtCore.QObject):
                 Optional; DESCRIPTION Defaults to None.
             endpoint_id (TYPE):
                 Optional; DESCRIPTION Defaults to None.
-
+            ek500_db_format (BOOL):
+                Set to True to return the echogram data in EK500 dB Format.
+                See section 3 of the Theory of Operation chapter in the
+                EK500 Operator's manual
         Returns:
             None
         '''
@@ -930,7 +967,8 @@ class ek80_rest_client(QtCore.QObject):
             #  add this sub to the subscriptions dict
             self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
                     'endpoint_id':endpoint_id, 'type':'echogram',
-                    'cleanup':self.delete_echogram_subscription}
+                    'cleanup':self.delete_echogram_subscription,
+                    'return_db_format':ek500_db_format}
 
             #  and connect the subscription to the endpoint
             subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')

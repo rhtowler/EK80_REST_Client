@@ -12,7 +12,7 @@ on the network. This can be used to send data to Echolog500 for
 import logging
 import collections
 import yaml
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtNetwork
 import ek80_rest_client
 
 
@@ -28,11 +28,18 @@ class telegram_blaster(QtCore.QObject):
         self.config_file = config_file
         self.clean_server = clean_server
 
+        #  define some initial properties
+        self.udp_socket = None
+
+        #  create a timer for polling the server
+        self.param_timer = QtCore.QTimer(self)
+        self.param_timer.timeout.connect(self.poll_parameters)
+
         #  start things up after we get the event loop running by using a timer
-        QtCore.QTimer.singleShot(0, self.startApp)
+        QtCore.QTimer.singleShot(0, self.start_app)
 
 
-    def startApp(self):
+    def start_app(self):
 
         #  bump the cursor
         print()
@@ -57,13 +64,12 @@ class telegram_blaster(QtCore.QObject):
         self.logger.addHandler(consoleLogger)
 
         #  create an instance of the client and connect some signals
-
         self.logger.debug("Connecting to EK80 server at %s." %
                 self.configuration['application']['ek80_server_ip'])
         self.client = ek80_rest_client.ek80_rest_client(server_address=
                 self.configuration['application']['ek80_server_ip'])
-        self.client.subscriptionData.connect(self.subscriptionDataAvailable)
-        self.client.cleanupComplete.connect(self.clientStopped)
+        self.client.subscriptionData.connect(self.subscription_data_available)
+        self.client.cleanupComplete.connect(self.client_stopped)
         self.stopClient.connect(self.client.cleanup_client)
 
         #  check if we need to wipe all of the subscriptions (and endpoints)
@@ -73,12 +79,14 @@ class telegram_blaster(QtCore.QObject):
             self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
             self.client.cleanup_server()
 
-
         #  get the list of channels
         self.channels = self.client.get_channels()
         chan_string = ', '.join(self.channels)
         self.logger.debug("Channels found: %s", chan_string)
 
+        #  create subscriptions to receive data required to send our EK500 telegrams
+        #  of choice. Currently that is VL, D, and Q telegrams so we subscribe to
+        #  echogram and bottom detections for our channels of interest
         self.bottom_sub_ids = []
         self.echogram_sub_ids = []
         if len(self.channels) > 0:
@@ -116,33 +124,161 @@ class telegram_blaster(QtCore.QObject):
             QtCore.QCoreApplication.instance().quit()
             return
 
+        #  create the local UDP port we'll use to transmit datagrams
+        host_address = QtNetwork.QHostAddress(self.configuration['application']['local_udp_ip'])
+        port = int(self.configuration['application']['local_udp_port'])
 
-    def stopApp(self):
+        self.logger.debug("Opening telegram server on interface %s port %i",
+                            host_address.toString(), port)
+        self.udp_socket = QtNetwork.QUdpSocket()
+        self.udp_socket.bind(host_address, port)
+
+        #  build a dict containing IP and port info for our clients
+        self.clients = {}
+        client_ips = self.configuration['clients']['client_ips']
+        client_ports = self.configuration['clients']['client_ports']
+        if len(client_ips) != len(client_ports):
+            if len(client_ports) == 1 and len(client_ips) > 1:
+                #  only one port is provided and so we assume we're using
+                #  that port for all IPs
+                client_ports = [client_ports[0]] * len(client_ips)
+            else:
+                #  don't know what to do. Both not enough and too many
+                #  ports defined. There should either be an n:1 or 1:1
+                #  ratio of ports to addresses
+                self.logger.critical("Client IP and port mismatch. Check the clients " +
+                        " section of the YML configuration file.")
+                QtCore.QCoreApplication.instance().quit()
+                return
+
+        #  now create a dict keyed by a string comprised of the IP and port
+        #  of the client whose elements are a dict containing the Qt host
+        #  address
+        for i in range(len(client_ips)):
+            host_address = QtNetwork.QHostAddress(client_ips[i])
+            port = int(client_ports[i])
+            client_id = host_address.toString() + ':' + str(port)
+            self.clients[client_id] = {'host_address':host_address, 'port':port}
+
+        #  lastly, set the polling timer interval and start it
+        self.param_timer.setInterval(self.configuration['application']['polled_param_interval_ms'])
+        self.param_timer.start()
+
+
+    @QtCore.pyqtSlot()
+    def poll_parameters(self):
+        '''
+        poll_parameters is called by a timer to poll the server for data
+        that isn't available via subscription.
+        '''
+
+        #  get the navigation data - this can be used to generate a GL datagram
+        nav_data = self.client.get_navigation()
+
+        print(nav_data)
+
+
+    def stop_app(self):
+
+        #  stop the param polling timer
+        self.param_timer.stop()
 
         self.logger.debug("Cleaning up the client...")
         self.stopClient.emit()
 
 
     @QtCore.pyqtSlot()
-    def clientStopped(self):
+    def client_stopped(self):
 
         self.logger.debug("Client cleanup complete.")
+
+
+        if self.udp_socket:
+            self.udp_socket.close()
+
         self.logger.info("Application exiting...")
         QtCore.QCoreApplication.instance().quit()
         return
 
 
     @QtCore.pyqtSlot(object, str, dict)
-    def subscriptionDataAvailable(self, clientObj, data_type, data):
+    def subscription_data_available(self, clientObj, data_type, data):
 
         if data_type == 'bottom detection':
-            #  print the results
+
+            #  you should have enough data from the bottom detection
+            #  subscription to create both a B and VL datagram so you
+            #  would do that here
+
+            #  pack the data as a properly formatted byte array
+
+            #  and then send the datagram
+            #self.send_telegram(telegram_bytes)
+
+            #  but for now, print the results
             print(data)
+
         elif data_type == 'echogram':
+
+            #  here you would piece together the Q datagram and then
+            #  pack the datagram into a byte array
+
+            #  and then send the datagram
+            #self.send_telegram(telegram_bytes)
+
+            #  but for now, print the results
             print(data)
         else:
             print('type: ', data_type)
             print(data)
+
+
+    def send_telegram(self, telegram_bytes):
+        '''
+        send_telegram sends a telegram packed as a byte array to
+        the configured clients.
+
+        Args:
+            telegram_bytes (bytearr):
+                The the EK500 telegram you are sending packed into
+                a byte array
+
+        Returns:
+            A dict keyed by client IP:port that contains the number of
+            bytes sent to each client. You can compare this to the length
+            of your telegram to determine if there was an issue sending to
+            that client.
+
+        '''
+
+        #  get the telegram length and type
+        telegram_length = len(telegram_bytes)
+        telegram_type = telegram_bytes[0:2].decode("utf-8")
+
+        #  now send it to each of our clients
+        sent_bytes = {}
+        for client in self.clients:
+            #  send the telegram
+            bytes_sent = self.udp_socket.writeDatagram(telegram_bytes,
+                    client['host_address'], client['port'])
+            #  keep track of how many bytes we send to each client
+            sent_bytes[client] = bytes_sent
+            #  check if we were able to send the full datagram
+            if bytes_sent != telegram_length:
+                #  nope, log the error
+                error_str = ("Incomplete %s telegram sent to %s:%i. " %
+                        (telegram_type, client['host_address'].toString(),
+                        client['port']))
+                error_str += ('Telegram length: %i, Bytes sent: %i' %
+                        (telegram_length, bytes_sent))
+                self.logger.error(error_str)
+            else:
+                #  yes, output some debug info
+                self.logger.debug('Sent %i byte %s telegram to %s:%i' %
+                    (telegram_length, telegram_type,
+                    client['host_address'].toString(), client['port']))
+
+        return sent_bytes
 
 
     def get_channel_configuration(self, channel_name):
@@ -194,9 +330,9 @@ class telegram_blaster(QtCore.QObject):
         return add_channel, config
 
 
-def exitHandler(a,b=None):
+def exit_handler(a,b=None):
     '''
-    exitHandler is called when CTRL-c is pressed on Windows
+    exit_handler is called when CTRL-c is pressed on Windows
     '''
     global ctrlc_pressed
 
@@ -204,7 +340,7 @@ def exitHandler(a,b=None):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C detected. Shutting down...")
-        example_app.stopApp()
+        example_app.stop_app()
 
     return True
 
@@ -221,7 +357,7 @@ def signal_handler(*args):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C or SIGTERM/SIGHUP detected. Shutting down...")
-        example_app.stopApp()
+        example_app.stop_app()
 
     return True
 
@@ -247,7 +383,7 @@ if __name__ == '__main__':
     if sys.platform == "win32":
         #  On Windows, we use win32api.SetConsoleCtrlHandler to catch ctrl-c
         import win32api
-        win32api.SetConsoleCtrlHandler(exitHandler, True)
+        win32api.SetConsoleCtrlHandler(exit_handler, True)
     else:
         #  On linux we can use signal to get not only ctrl-c, but
         #  termination and hangup signals also.
