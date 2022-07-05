@@ -7,6 +7,7 @@ application:
     local_udp_port: 15024
     log_level: DEBUG
     polled_param_interval_ms: 1000
+    lost_server_retry_interval_ms: 5000
 
 
 #  specify the network address and port where the EK500 telegrams
@@ -17,7 +18,7 @@ clients:
         - 127.0.0.1
         #- 192.168.114.123
     client_ports:
-        - 5001
+        - 2002
         #- 5001
 
 

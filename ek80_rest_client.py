@@ -32,7 +32,6 @@
 """
 
 
-import logging
 import uuid
 import datetime
 import zmq
@@ -56,6 +55,7 @@ class ek80_rest_client(QtCore.QObject):
     #  define our signals
     subscriptionData = QtCore.pyqtSignal(object, str, dict)
     cleanupComplete = QtCore.pyqtSignal()
+
 
 
     def __init__(self, server_address='localhost', param_server_port=12345,
@@ -88,9 +88,6 @@ class ek80_rest_client(QtCore.QObject):
         self.data_client_config = ek80_data_client.Configuration()
         self.data_client_config.host="http://" + server_address + ":" + str(data_server_port)
         self.data_api_client = ek80_data_client.ApiClient(configuration=self.data_client_config)
-
-        #  set up logging
-        self.logger = logging.getLogger(__name__)
 
         #  create a timer to poll the zero-mq subscriptions
         self.poll_timer = QtCore.QTimer(self)
@@ -167,22 +164,13 @@ class ek80_rest_client(QtCore.QObject):
 
         #  remove the subscription from its endpoint
         api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
-
-        try:
-            api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
-        except Exception as e:
-            self.logger.error("Error removing subscription from endpoint: %s" % e)
-            pass
+        api_instance.remove_subscription_from_end_point(endpoint_id, sub_id)
 
         #  create an instance of the bottom detections subs api
         api_instance = ek80_data_client.BottomDetectionSubscriptionsApi(self.data_api_client)
 
         #  delete the bottom detection subscription
-        try:
-            api_instance.delete_bottom_detection_subscription(sub_id)
-        except Exception as e:
-            self.logger.error("Error deleting bottom detection subscription: %s" % e)
-            pass
+        api_instance.delete_bottom_detection_subscription(sub_id)
 
         #  update the endpoint's subscriptions list and remove the subscription
         #  from our subscriptions dict.
@@ -433,11 +421,16 @@ class ek80_rest_client(QtCore.QObject):
                         dg_dict['subscriptionId']  = int(dg_dict['subscriptionId'])
 
                         #  convert data to numpy array
-                        dg_dict['data'] = np.array(dg_dict['data'], dtype=np.single)
+                        #dg_dict['data'] = np.array(dg_dict['data'], dtype=np.single)
 
                         #  convert EK500 dB format?
                         if not self.subscriptions[dg_dict['subscriptionId']]['return_db_format']:
-                             dg_dict['data'] *= self.INDEX2POWER
+                            #  yes, return Sv as float
+                            dg_dict['data'] = np.array(dg_dict['data'], dtype=np.single)
+                            dg_dict['data'] *= self.INDEX2POWER
+                        else:
+                            #  return EK500 dB format data as 16-bit int
+                            dg_dict['data'] = np.array(dg_dict['data'], dtype=np.short)
 
                         #  emit the data signal
                         self.subscriptionData.emit(self, data_type, dg_dict)
@@ -453,7 +446,7 @@ class ek80_rest_client(QtCore.QObject):
 
 
     @QtCore.pyqtSlot()
-    def cleanup_client(self):
+    def cleanup_client(self, quiet=False):
         '''
         cleanup_client should be called when you're done using the client
         to ensure that all of the client's subscriptions and endpoints
@@ -470,18 +463,27 @@ class ek80_rest_client(QtCore.QObject):
         if self.poll_timer.isActive():
             self.poll_timer.stop()
 
-        #  delete all existing subscriptions
+        #  delete all existing subscriptions - since we may be trying
+        #  to delete subscriptions that don't exist, we ignore any errors
         for sub_id in self.subscriptions:
-            self.subscriptions[sub_id]['cleanup'](sub_id, cleanup=True)
+            try:
+                self.subscriptions[sub_id]['cleanup'](sub_id, cleanup=True)
+            except:
+                pass
 
-        #  and remove all existing endpoints
+        #  and remove all existing endpoints - since we may be trying
+        #  to remove enpoints that don't exist, we ignore any errors
         for endpoint_id in self.endpoints:
-            self.delete_server_endpoint(endpoint_id)
+            try:
+                self.delete_server_endpoint(endpoint_id)
+            except:
+                pass
 
         self.subscriptions = {}
         self.endpoints = {}
 
-        self.cleanupComplete.emit()
+        if not quiet:
+            self.cleanupComplete.emit()
 
 
     def cleanup_server(self):
@@ -519,7 +521,7 @@ class ek80_rest_client(QtCore.QObject):
 
             #  work thru the subscriptions, deleting them as we go
             for sub in subscriptions:
-                #  as we add new subscirption types, we need to expand this code
+                #  as we add new subscription types, we need to expand this code
                 #  to handle deleting them.
                 print("removing sub: ", sub)
                 if sub.subscription_type == 'bottom detection':

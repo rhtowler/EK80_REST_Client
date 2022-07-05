@@ -9,9 +9,11 @@ on the network. This can be used to send data to Echolog500 for
 
 """
 
+import struct
 import logging
 import collections
 import yaml
+import urllib3
 from PyQt5 import QtCore, QtNetwork
 import ek80_rest_client
 
@@ -34,6 +36,10 @@ class telegram_blaster(QtCore.QObject):
         #  create a timer for polling the server
         self.param_timer = QtCore.QTimer(self)
         self.param_timer.timeout.connect(self.poll_parameters)
+
+        #  create a timer for reestablishing a lost connection.
+        self.retry_timer = QtCore.QTimer(self)
+        self.retry_timer.timeout.connect(self.reestablish_connection)
 
         #  start things up after we get the event loop running by using a timer
         QtCore.QTimer.singleShot(0, self.start_app)
@@ -62,78 +68,19 @@ class telegram_blaster(QtCore.QObject):
         consoleLogger = logging.StreamHandler(sys.stdout)
         consoleLogger.setFormatter(formatter)
         self.logger.addHandler(consoleLogger)
-
-        #  create an instance of the client and connect some signals
-        self.logger.debug("Connecting to EK80 server at %s." %
-                self.configuration['application']['ek80_server_ip'])
-        self.client = ek80_rest_client.ek80_rest_client(server_address=
-                self.configuration['application']['ek80_server_ip'])
-        self.client.subscriptionData.connect(self.subscription_data_available)
-        self.client.cleanupComplete.connect(self.client_stopped)
-        self.stopClient.connect(self.client.cleanup_client)
-
-        #  check if we need to wipe all of the subscriptions (and endpoints)
-        #  from the server. This is sometimes needed while developing client
-        #  apps after they crash and leave their bits around on the server.
-        if self.clean_server:
-            self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
-            self.client.cleanup_server()
-
-        #  get the list of channels
-        self.channels = self.client.get_channels()
-        chan_string = ', '.join(self.channels)
-        self.logger.debug("Channels found: %s", chan_string)
-
-        #  create subscriptions to receive data required to send our EK500 telegrams
-        #  of choice. Currently that is VL, D, and Q telegrams so we subscribe to
-        #  echogram and bottom detections for our channels of interest
-        self.bottom_sub_ids = []
-        self.echogram_sub_ids = []
-        if len(self.channels) > 0:
-            for channel in self.channels:
-
-                add_channel, channel_config = self.get_channel_configuration(channel)
-
-                if add_channel:
-                    #  this channel has either an explicit entry or a "default"
-                    #  entry exists and will be used.
-                    self.logger.debug("Adding channel %s ", channel)
-
-                    #  add the bottom detection subscription
-                    bottom_detect_sub = self.client.create_bottom_detection_subscription(channel,
-                            upper_detector_limit=channel_config['upper_detector_limit'],
-                            lower_detector_limit=channel_config['lower_detector_limit'],
-                            bottom_back_step=channel_config['bottom_back_step'])
-                    self.bottom_sub_ids.append(bottom_detect_sub)
-
-                    #  add the surface echogram subscription
-                    echogram_sub = self.client.create_echogram_subscription(channel,
-                            pixel_count=channel_config['surface_echogram_count'],
-                            range=channel_config['surface_echogram_range'],
-                            range_start=channel_config['surface_echogram_start'])
-                    self.echogram_sub_ids.append(echogram_sub)
-
-                else:
-                    #  we're not adding this channel
-                    self.logger.debug("Channel %s not found in config file. Skipping.",
-                            channel)
-
-        else:
-            #  no channels?
-            self.logger.critical("No channels found! Nothing to do so we're exiting...")
-            QtCore.QCoreApplication.instance().quit()
-            return
+        self.logger.info("Starting telegram_blaster...")
 
         #  create the local UDP port we'll use to transmit datagrams
         host_address = QtNetwork.QHostAddress(self.configuration['application']['local_udp_ip'])
         port = int(self.configuration['application']['local_udp_port'])
 
-        self.logger.debug("Opening telegram server on interface %s port %i",
+        self.logger.info("Opening telegram server on interface %s port %i",
                             host_address.toString(), port)
         self.udp_socket = QtNetwork.QUdpSocket()
         self.udp_socket.bind(host_address, port)
 
         #  build a dict containing IP and port info for our clients
+        self.logger.info("Building client list...")
         self.clients = {}
         client_ips = self.configuration['clients']['client_ips']
         client_ports = self.configuration['clients']['client_ports']
@@ -160,9 +107,95 @@ class telegram_blaster(QtCore.QObject):
             client_id = host_address.toString() + ':' + str(port)
             self.clients[client_id] = {'host_address':host_address, 'port':port}
 
+        #  set the connection retry timer interval
+        self.retry_timer.setInterval(self.configuration['application']['lost_server_retry_interval_ms'])
+        self.retry_timer.setSingleShot(True)
+
         #  lastly, set the polling timer interval and start it
         self.param_timer.setInterval(self.configuration['application']['polled_param_interval_ms'])
+
+        #  create an instance of the client and connect some signals
+        self.logger.debug("Connecting to EK80 server at %s." %
+                self.configuration['application']['ek80_server_ip'])
+        self.client = ek80_rest_client.ek80_rest_client(server_address=
+                self.configuration['application']['ek80_server_ip'])
+        self.client.subscriptionData.connect(self.subscription_data_available)
+        self.client.cleanupComplete.connect(self.client_stopped)
+        self.stopClient.connect(self.client.cleanup_client)
+
+        #  check if we need to wipe all of the subscriptions (and endpoints)
+        #  from the server. This is sometimes needed while developing client
+        #  apps after they crash and leave their bits around on the server.
+        if self.clean_server:
+            self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
+            try:
+                self.client.cleanup_server()
+            except:
+                pass
+
+        #  create our subscriptions
+        try:
+            self.create_subscritions()
+        except urllib3.exceptions.MaxRetryError:
+            #  we couldn't connect to the server so start retrying
+            self.retry_timer.start()
+            return
+        except Exception as e:
+            #  some other issue, raise it
+            raise(e)
+
+        #  we're "connected" so start polling parameters
         self.param_timer.start()
+
+
+    def create_subscritions(self):
+
+        #  get the list of channels
+        self.logger.info("Getting channel information from EK80 server...")
+        self.channels = self.client.get_channels()
+        chan_string = ', '.join(self.channels)
+        self.logger.info("Channels found: %s", chan_string)
+
+        #  create subscriptions to receive data required to send our EK500 telegrams
+        #  of choice. Currently that is VL, D, B, and Q telegrams so we subscribe to
+        #  echogram and bottom detections for our channels of interest
+        self.bottom_sub_ids = []
+        self.echogram_sub_ids = []
+        if len(self.channels) > 0:
+            for channel in self.channels:
+
+                #  process the channel config data to determine if we're adding
+                #  this channel and return the config parameters.
+                add_channel, channel_config = self.get_channel_configuration(channel)
+
+                if add_channel:
+                    #  this channel has either an explicit entry or a "default"
+                    #  entry exists and will be used.
+                    self.logger.info("Adding channel %s ", channel)
+
+                    #  add the bottom detection subscription
+                    bottom_detect_sub = self.client.create_bottom_detection_subscription(channel,
+                            upper_detector_limit=channel_config['upper_detector_limit'],
+                            lower_detector_limit=channel_config['lower_detector_limit'],
+                            bottom_back_step=channel_config['bottom_back_step'])
+                    self.bottom_sub_ids.append(bottom_detect_sub)
+
+                    #  add the surface echogram subscription
+                    echogram_sub = self.client.create_echogram_subscription(channel,
+                            pixel_count=channel_config['surface_echogram_count'],
+                            range=channel_config['surface_echogram_range'],
+                            range_start=channel_config['surface_echogram_start'],
+                            ek500_db_format=True)
+                    self.echogram_sub_ids.append(echogram_sub)
+
+                else:
+                    #  we're not adding this channel
+                    self.logger.info("Channel %s not found in config file. Skipping.",
+                            channel)
+
+        else:
+            #  no channels?
+            self.logger.error("No channels found! What are we doing here???")
 
 
     @QtCore.pyqtSlot()
@@ -170,24 +203,66 @@ class telegram_blaster(QtCore.QObject):
         '''
         poll_parameters is called by a timer to poll the server for data
         that isn't available via subscription.
+
+        poll_parameters is also used as a heartbeat check for the EK80 server.
+        If we lose the connection to the server, the requests here will fail.
+
         '''
 
-        #  get the navigation data - this can be used to generate a GL datagram
-        nav_data = self.client.get_navigation()
+        try:
 
-        print(nav_data)
+            #  get the navigation data - this can be used to generate a GL datagram
+            nav_data = self.client.get_navigation()
+
+            print(nav_data)
+
+        except urllib3.exceptions.MaxRetryError:
+            #  we've lost connection - stop polling and start trying to reconnect
+            self.param_timer.stop()
+            self.logger.error("Lost connection to EK80 server at %s" %
+                    (self.configuration['application']['ek80_server_ip']))
+            self.logger.info("Attempting to reconnect to EK80 server at %s" %
+                    (self.configuration['application']['ek80_server_ip']))
+
+            self.reestablish_connection()
+
+
+    @QtCore.pyqtSlot()
+    def reestablish_connection(self):
+
+        self.logger.info("Trying to (re)connect to EK80 server")
+
+        #  try to get the navigation data. This call will succeed
+        try:
+            _ = self.client.get_navigation()
+
+        except Exception:
+            self.retry_timer.start()
+            return
+
+        self.logger.info("Cleaning up old subscriptions...")
+        self.client.cleanup_client(quiet=True)
+
+        self.logger.info("Creating new subscriptions...")
+        self.create_subscritions()
+
+        self.param_timer.start()
 
 
     def stop_app(self):
 
-        #  stop the param polling timer
+        #  stop all timers
         self.param_timer.stop()
+        self.retry_timer.stop()
 
         self.logger.debug("Cleaning up the client...")
-        self.stopClient.emit()
+        try:
+            self.stopClient.emit()
+        except:
+            pass
 
 
-    @QtCore.pyqtSlot()
+
     def client_stopped(self):
 
         self.logger.debug("Client cleanup complete.")
@@ -199,6 +274,18 @@ class telegram_blaster(QtCore.QObject):
         self.logger.info("Application exiting...")
         QtCore.QCoreApplication.instance().quit()
         return
+    def get_header_data(self,  datetime_val):
+
+        #get the header info for the B/VL datagrams (i.e a string "VL,HHMMSShh,YYMMDD, "):
+        #get time as string HHMMSShh: RICK- ok to just strip out the excessive millesecond places, as opposed to round?
+        header_time = datetime_val.strftime("%H%M%S%f")[:-4]
+
+        #get year, month, day zero padded (i.e day 6 = 06) as a string YYMMDD
+        header_date = datetime_val.strftime("%y%m%d")
+        #combine as datetime string "VL,HHMMSShh,YYMMDD, "; convert to a byte
+        header_bytes = bytes(('VL,' +header_time+ ','+header_date+', '), 'utf-8')
+
+        return header_bytes
 
 
     @QtCore.pyqtSlot(object, str, dict)
@@ -210,13 +297,16 @@ class telegram_blaster(QtCore.QObject):
             #  subscription to create both a B and VL datagram so you
             #  would do that here
 
+
+            #  create the header
+            header_bytes = self.get_header_data( data['pingTime'])
+            #  get the vessel log distance formatted as a C float
+            dist_bytes = struct.pack('f', data['vesselLogDistance'])
             #  pack the data as a properly formatted byte array
-
+            telegram_bytes = header_bytes + dist_bytes
             #  and then send the datagram
-            #self.send_telegram(telegram_bytes)
+            self.send_telegram(telegram_bytes)
 
-            #  but for now, print the results
-            print(data)
 
         elif data_type == 'echogram':
 
@@ -257,12 +347,12 @@ class telegram_blaster(QtCore.QObject):
 
         #  now send it to each of our clients
         sent_bytes = {}
-        for client in self.clients:
+        for address_key,  client in self.clients.items():
             #  send the telegram
             bytes_sent = self.udp_socket.writeDatagram(telegram_bytes,
                     client['host_address'], client['port'])
             #  keep track of how many bytes we send to each client
-            sent_bytes[client] = bytes_sent
+            sent_bytes[address_key] = bytes_sent
             #  check if we were able to send the full datagram
             if bytes_sent != telegram_length:
                 #  nope, log the error
@@ -281,7 +371,7 @@ class telegram_blaster(QtCore.QObject):
         return sent_bytes
 
 
-    def get_channel_configuration(self, channel_name):
+    def get_channel_configuration(self, channel_name, defaults={}):
         '''get_channel_configuration returns a bool specifying if the channel should
         be utilized and a dict containing any channel configuration parameters.
 
@@ -311,7 +401,7 @@ class telegram_blaster(QtCore.QObject):
         add_channel = False
 
         #  start with the default channel configuration
-        config = {}
+        config = defaults
 
         # Look for a channel specific entry first
         if channel_name in self.configuration['channels']:
@@ -393,8 +483,8 @@ if __name__ == '__main__':
         signal.signal(signal.SIGHUP, signal_handler)
 
     #  parse the command line arguments
-    parser = argparse.ArgumentParser(description='TelegramBlaster uses the EK80 REST client to subscribe to ' +
-            'data channels and broadcast EK500 style telegrams on the local network.')
+    parser = argparse.ArgumentParser(description='telegram_blaster uses the EK80 REST client to subscribe to ' +
+            'data channels and broadcast EK500 style telegrams on the network.')
     parser.add_argument("-c", "--clean", help="Set to True to remove all server subscriptions before running.")
     parser.add_argument("-f", "--config_file", help="Specify the path to the yml configuration file.")
 
