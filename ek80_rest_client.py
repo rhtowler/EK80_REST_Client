@@ -38,7 +38,6 @@ import zmq
 import numpy as np
 import ek80_data_client
 import ek80_param_client
-from ek80_data_client.rest import ApiException
 from google.protobuf.json_format import MessageToDict
 import ek80_datagrams_v2115_pb2 as ek80_datagrams_pb2
 from PyQt5 import QtCore
@@ -108,6 +107,19 @@ class ek80_rest_client(QtCore.QObject):
         '''
         osa = ek80_param_client.OwnshipApi()
         return osa.ownship_get_navigation()
+
+
+    def get_motion(self):
+        """
+        get_motion returns heave, pitch, roll, surge, sway, time, and yaw
+        """
+        osa = ek80_param_client.OwnshipApi()
+        motion_data = osa.ownship_get_motion()
+
+        #convert the ping_time to a datetime
+        motion_data.time = self.convert_nt_time(motion_data.time)
+
+        return motion_data
 
 
     def get_drop_keel_offset(self):
@@ -293,7 +305,7 @@ class ek80_rest_client(QtCore.QObject):
                 Optional; DESCRIPTION Defaults to None.
 
         Returns:
-            None
+            The subscription ID as int
 
         '''
 
@@ -327,24 +339,21 @@ class ek80_rest_client(QtCore.QObject):
         sub_spec.subscriber_name = self.name
         sub_spec.subscription_name = name
 
-        #  now try to create the subscription
-        try:
-            #  create the subscription
-            sub_id = api_instance.create_bottom_detection_subscription(sub_spec)
+        #  create the subscription
+        sub_id = api_instance.create_bottom_detection_subscription(sub_spec)
 
-            #  add this sub to the subscriptions dict
-            self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
-                    'endpoint_id':endpoint_id, 'type':'bottom detection',
-                    'cleanup':self.delete_bottom_detection_subscription}
+        #  add this sub to the subscriptions dict
+        self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
+                'endpoint_id':endpoint_id, 'type':'bottom detection',
+                'cleanup':self.delete_bottom_detection_subscription}
 
-            #  and connect the subscription to the endpoint
-            subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')
-            api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
-            api_instance.add_subscription_to_end_point(endpoint_id, subscription_output_args)
-            self.endpoints[endpoint_id]['subscriptions'].append(sub_id)
+        #  and connect the subscription to the endpoint
+        subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')
+        api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
+        api_instance.add_subscription_to_end_point(endpoint_id, subscription_output_args)
+        self.endpoints[endpoint_id]['subscriptions'].append(sub_id)
 
-        except ApiException as e:
-            print("Exception when calling CreateADataSubscriptionApi->create_bottom_detection_subscription: %s\n" % e)
+        return sub_id
 
 
     def poll_zmq_messages(self):
@@ -420,8 +429,10 @@ class ek80_rest_client(QtCore.QObject):
                         #  convert subscription ID to int
                         dg_dict['subscriptionId']  = int(dg_dict['subscriptionId'])
 
-                        #  convert data to numpy array
-                        #dg_dict['data'] = np.array(dg_dict['data'], dtype=np.single)
+                        #  check for a depth field and insert if missing. The depth
+                        #  field is omitted if there is no bottom detection.
+                        if 'bottomDepth' not in dg_dict:
+                            dg_dict['bottomDepth'] = 0
 
                         #  convert EK500 dB format?
                         if not self.subscriptions[dg_dict['subscriptionId']]['return_db_format']:
@@ -914,7 +925,7 @@ class ek80_rest_client(QtCore.QObject):
                 See section 3 of the Theory of Operation chapter in the
                 EK500 Operator's manual
         Returns:
-            None
+            The subscription ID as int
         '''
 
         #  increment the subscription counter
@@ -936,7 +947,6 @@ class ek80_rest_client(QtCore.QObject):
 
         #  create our settings and spec objects
         sub_settings = ek80_data_client.EchogramSettings()
-
 
         #  set the various subscription settings
         sub_settings.pixel_count = pixel_count
@@ -961,23 +971,20 @@ class ek80_rest_client(QtCore.QObject):
                 channel_id=channel_id, settings=sub_settings,
                 subscription_name=name, subscriber_name=self.name)
 
-        #  now try to create the subscription
-        try:
-            #  create the subscription
-            sub_id = api_instance.create_echogram_subscription(sub_spec)
+        #  create the subscription
+        sub_id = api_instance.create_echogram_subscription(sub_spec)
 
-            #  add this sub to the subscriptions dict
-            self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
-                    'endpoint_id':endpoint_id, 'type':'echogram',
-                    'cleanup':self.delete_echogram_subscription,
-                    'return_db_format':ek500_db_format}
+        #  add this sub to the subscriptions dict
+        self.subscriptions[sub_id] = {'name':name, 'channel_id':channel_id,
+                'endpoint_id':endpoint_id, 'type':'echogram',
+                'cleanup':self.delete_echogram_subscription,
+                'return_db_format':ek500_db_format}
 
-            #  and connect the subscription to the endpoint
-            subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')
-            api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
-            api_instance.add_subscription_to_end_point(endpoint_id, subscription_output_args)
-            self.endpoints[endpoint_id]['subscriptions'].append(sub_id)
+        #  and connect the subscription to the endpoint
+        subscription_output_args = ek80_data_client.SubscriptionOutputArgs(sub_id, 'proto-buf')
+        api_instance = ek80_data_client.CommunicationEndPointsApi(self.data_api_client)
+        api_instance.add_subscription_to_end_point(endpoint_id, subscription_output_args)
+        self.endpoints[endpoint_id]['subscriptions'].append(sub_id)
 
-        except ApiException as e:
-            print("Exception when calling CreateADataSubscriptionApi->create_echogram_subscription: %s\n" % e)
+        return sub_id
 

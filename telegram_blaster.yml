@@ -60,56 +60,59 @@ channels:
         bottom_echogram_range: 15
         bottom_echogram_count: 100
 
-#    WBT 978213-15 ES70-7C_ES:
-#        #  bottom minimum search depth - IN DEPTH
-#        upper_detector_limit: 15
-#        lower_detector_limit: 500
-#        bottom_back_step: -50.0
-#
-#        #  bottom search backstep in dB
-#        bot_detect_backstep_db: 35
-#
-#        # Q telegram sample counts - must not exceed 714 total
-#        surface_echogram_start: 0
-#        surface_echogram_range: 500
-#        surface_echogram_count: 550
-#        bottom_echogram_start: -10
-#        bottom_echogram_range: 15
-#        bottom_echogram_count: 100
-#
-#    WBT 976714-15 ES120-7C_ES:
-#        #  bottom minimum search depth - IN DEPTH
-#        upper_detector_limit: 15
-#        lower_detector_limit: 200
-#        bottom_back_step: -50.0
-#
-#        #  bottom search backstep in dB
-#        bot_detect_backstep_db: 35
-#
-#        # Q telegram sample counts - must not exceed 714 total
-#        surface_echogram_start: 0
-#        surface_echogram_range: 500
-#        surface_echogram_count: 550
-#        bottom_echogram_start: -10
-#        bottom_echogram_range: 15
-#        bottom_echogram_count: 100
-#
-#    WBT 978208-15 ES200-7C_ES:
-#            #  bottom minimum search depth - IN DEPTH
-#        upper_detector_limit: 15
-#        lower_detector_limit: 150
-#        bottom_back_step: -50.0
-#
-#        #  bottom search backstep in dB
-#        bot_detect_backstep_db: 35
-#
-#        # Q telegram sample counts - must not exceed 714 total
-#        surface_echogram_start: 0
-#        surface_echogram_range: 500
-#        surface_echogram_count: 550
-#        bottom_echogram_start: -10
-#        bottom_echogram_range: 15
-#        bottom_echogram_count: 100
+    WBT 978213-15 ES70-7C_ES:
+        #  bottom minimum search depth - IN DEPTH
+        upper_detector_limit: 15
+        lower_detector_limit: 500
+        bottom_back_step: -50.0
+
+        #  bottom search backstep in dB
+        bot_detect_backstep_db: 35
+
+        # Q telegram sample counts - must not exceed 714 total
+        q_telegram_channel: 3
+        surface_echogram_start: 0
+        surface_echogram_range: 500
+        surface_echogram_count: 550
+        bottom_echogram_start: -10
+        bottom_echogram_range: 15
+        bottom_echogram_count: 100
+
+    WBT 976714-15 ES120-7C_ES:
+        #  bottom minimum search depth - IN DEPTH
+        upper_detector_limit: 15
+        lower_detector_limit: 200
+        bottom_back_step: -50.0
+
+        #  bottom search backstep in dB
+        bot_detect_backstep_db: 35
+
+        # Q telegram sample counts - must not exceed 714 total
+        q_telegram_channel: 4
+        surface_echogram_start: 0
+        surface_echogram_range: 500
+        surface_echogram_count: 550
+        bottom_echogram_start: -10
+        bottom_echogram_range: 15
+        bottom_echogram_count: 100
+
+    WBT 978208-15 ES200-7C_ES:
+            #  bottom minimum search depth - IN DEPTH
+        upper_detector_limit: 15
+        lower_detector_limit: 150
+        bottom_back_step: -50.0
+
+        #  bottom search backstep in dB
+        bot_detect_backstep_db: 35
+
+        # Q telegram sample counts - must not exceed 714 total
+        q_telegram_channel: 5
+        surface_echogram_start: 0
+        surface_echogram_range: 500
+        surface_echogram_count: 550
+        bottom_echogram_start: -10
+        bottom_echogram_range: 15
+        bottom_echogram_count: 100
 
 #    WBT 976726-15 ES333-7C_ES:
 #        #  bottom minimum search depth - IN DEPTH
@@ -121,6 +124,7 @@ channels:
 #        bot_detect_backstep_db: 35
 #
 #        # Q telegram sample counts - must not exceed 714 total
+#        q_telegram_channel: 6
 #        surface_echogram_start: 0
 #        surface_echogram_range: 500
 #        surface_echogram_count: 550

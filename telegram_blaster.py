@@ -9,6 +9,7 @@ on the network. This can be used to send data to Echolog500 for
 
 """
 
+import datetime
 import struct
 import logging
 import collections
@@ -156,11 +157,22 @@ class telegram_blaster(QtCore.QObject):
         chan_string = ', '.join(self.channels)
         self.logger.info("Channels found: %s", chan_string)
 
+        #  initialize some attributes that help us track and store subscription data
+        self.bottom_sub_ids = []
+        self.surface_echogram_sub_ids = []
+        self.bottom_echogram_sub_ids = []
+        self.channel_id_map = {}
+        self.last_vl_ping = -1
+
+        #  Q telegrams contain data from both the surface and bottom echogram subscriptions.
+        #  Since these data are received in separate callback calls, we need to buffer the
+        #  data for each ping so we can send it after we receive both the surface and bottom
+        #  data. Create a dict well key by channel ID that we can use to do this.
+        self.q_data_buffer = {}
+
         #  create subscriptions to receive data required to send our EK500 telegrams
         #  of choice. Currently that is VL, D, B, and Q telegrams so we subscribe to
-        #  echogram and bottom detections for our channels of interest
-        self.bottom_sub_ids = []
-        self.echogram_sub_ids = []
+        #  surface and bottom echograms and bottom detections for our channels of interest
         if len(self.channels) > 0:
             for channel in self.channels:
 
@@ -173,6 +185,14 @@ class telegram_blaster(QtCore.QObject):
                     #  entry exists and will be used.
                     self.logger.info("Adding channel %s ", channel)
 
+                    #  Create a mapping of channel ID to telegram number
+                    self.channel_id_map[channel] = channel_config['q_telegram_channel']
+
+                    #  initialize the Q datagram buffer for this channel - we'll use ping
+                    #  number to determine if we've rx'd data from both subscriptions
+                    self.q_data_buffer[channel] = {'surface_ping_number':-1, 'surface_data':[],
+                            'bottom_ping_number':-1, 'bottom_data':[]}
+
                     #  add the bottom detection subscription
                     bottom_detect_sub = self.client.create_bottom_detection_subscription(channel,
                             upper_detector_limit=channel_config['upper_detector_limit'],
@@ -181,12 +201,20 @@ class telegram_blaster(QtCore.QObject):
                     self.bottom_sub_ids.append(bottom_detect_sub)
 
                     #  add the surface echogram subscription
-                    echogram_sub = self.client.create_echogram_subscription(channel,
+                    surface_echogram_sub = self.client.create_echogram_subscription(channel,
                             pixel_count=channel_config['surface_echogram_count'],
                             range=channel_config['surface_echogram_range'],
                             range_start=channel_config['surface_echogram_start'],
                             ek500_db_format=True)
-                    self.echogram_sub_ids.append(echogram_sub)
+                    self.surface_echogram_sub_ids.append(surface_echogram_sub)
+
+                    #  add the bottom echogram subscription
+                    bottom_echogram_sub = self.client.create_echogram_subscription(channel,
+                            pixel_count=channel_config['bottom_echogram_count'],
+                            range=channel_config['bottom_echogram_range'],
+                            range_start=channel_config['bottom_echogram_start'],
+                            echogram_type='bottom', ek500_db_format=True)
+                    self.bottom_echogram_sub_ids.append(bottom_echogram_sub)
 
                 else:
                     #  we're not adding this channel
@@ -214,7 +242,20 @@ class telegram_blaster(QtCore.QObject):
             #  get the navigation data - this can be used to generate a GL datagram
             nav_data = self.client.get_navigation()
 
-            print(nav_data)
+            #  there seems to be a bug in the EK80 REST API where the time (and VL) are
+            #  returned as 0. Until that is fixed, we'll get time from the motion data.
+            motion_data = self.client.get_motion()
+            gl_time = self.get_header_time(motion_data.time)
+
+            #  if we have valid GPS data, send the GL datagram
+            if (not nav_data.has_timed_out and
+                    nav_data.position.input_status.lower() == 'ok'):
+                #  get the GL datagram as an array of bytes
+                gl_bytes = self.get_gl_telegram(nav_data.position.latitude,
+                        nav_data.position.longitude, gl_time)
+
+                #  and then send the datagram
+                self.send_telegram(gl_bytes)
 
         except urllib3.exceptions.MaxRetryError:
             #  we've lost connection - stop polling and start trying to reconnect
@@ -262,7 +303,6 @@ class telegram_blaster(QtCore.QObject):
             pass
 
 
-
     def client_stopped(self):
 
         self.logger.debug("Client cleanup complete.")
@@ -274,18 +314,61 @@ class telegram_blaster(QtCore.QObject):
         self.logger.info("Application exiting...")
         QtCore.QCoreApplication.instance().quit()
         return
-    def get_header_data(self,  datetime_val):
 
-        #get the header info for the B/VL datagrams (i.e a string "VL,HHMMSShh,YYMMDD, "):
-        #get time as string HHMMSShh: RICK- ok to just strip out the excessive millesecond places, as opposed to round?
-        header_time = datetime_val.strftime("%H%M%S%f")[:-4]
+
+    def get_header_date(self,  datetime_val):
 
         #get year, month, day zero padded (i.e day 6 = 06) as a string YYMMDD
         header_date = datetime_val.strftime("%y%m%d")
-        #combine as datetime string "VL,HHMMSShh,YYMMDD, "; convert to a byte
-        header_bytes = bytes(('VL,' +header_time+ ','+header_date+', '), 'utf-8')
 
-        return header_bytes
+        return header_date
+
+
+    def get_header_time(self,  datetime_val):
+        '''
+        get_header_time returns the time as a string ub EK500 telegram format.
+        For example: datetime object: datetime.datetime(2022, 7, 9, 10, 58, 1, 734927)
+                     returned string: '10580173'
+
+        '''
+        #  get time as string HHMMSSmm. Since strftime %f always returns microseconds
+        #  padded to 6 places, we can simply drop the last four chars to return a time
+        #  close enough for what we're doing.
+        header_time = datetime_val.strftime("%H%M%S%f")[:-4]
+        return header_time
+
+
+    def get_gl_telegram(self,  lat,  lon,  postion_time):
+        '''
+        get_gl_telegram returns a byte array containing an EK500 GL telegram
+        containing the provided lat, lon, and time.
+        '''
+
+        #  what goes into the position string of a GL telegram can vary based on ???
+        #  I assumed it was a NMEA GPGLL or GPGGA string and some systems may have
+        #  output that. We just copied the output of the EK60 which is:
+        #       LLMM.MMMM,N,LLLMM.MMMM,W
+        #
+
+        #  get the degrees as a string
+        lat_deg = str.split(str(lat), '.')[0]
+        lon_deg = str.split(str(abs(lon)), '.')[0]
+
+        #  convert the rest to MM.MM
+        lat_mm = '%4.4f' % (divmod(lat, 1)[1] * 60)
+        lon_mm = '%5.4f' % (divmod(lon, 1)[1] * 60)
+
+        #  and assign W/N as needed
+        lat_loc = 'N' if lat >= 0 else 'S'
+        lon_loc = 'E' if lon >= 0 else 'W'
+
+        #combine as a string
+        pos_str = (lat_deg + lat_mm + ',' + lat_loc +
+                ',' + lon_deg + lon_mm + ',' + lon_loc)
+
+        #pack the data as a byte array and return
+        gl_bytes = bytes(('GL,'+postion_time+','+pos_str), 'utf-8')
+        return gl_bytes
 
 
     @QtCore.pyqtSlot(object, str, dict)
@@ -297,27 +380,82 @@ class telegram_blaster(QtCore.QObject):
             #  subscription to create both a B and VL datagram so you
             #  would do that here
 
+            #get your header row
+            header_date = self.get_header_date(data['pingTime'])
+            header_time = self.get_header_time(data['pingTime'])
 
-            #  create the header
-            header_bytes = self.get_header_data( data['pingTime'])
-            #  get the vessel log distance formatted as a C float
-            dist_bytes = struct.pack('f', data['vesselLogDistance'])
-            #  pack the data as a properly formatted byte array
-            telegram_bytes = header_bytes + dist_bytes
-            #  and then send the datagram
-            self.send_telegram(telegram_bytes)
-
+            #  check if we should emit a VL telegram - we do this only once per ping
+            if self.last_vl_ping != data['pingNumber']:
+                #  this is a new ping - send VL
+                header_bytes = bytes(('VL,' +header_time+ ','+header_date+', '), 'utf-8')
+                dist_bytes = struct.pack('f', data['vesselLogDistance'])
+                dist_datagram_bytes = header_bytes + dist_bytes
+                self.send_telegram(dist_datagram_bytes)
+                self.last_vl_ping = data['pingNumber']
 
         elif data_type == 'echogram':
 
-            #  here you would piece together the Q datagram and then
-            #  pack the datagram into a byte array
+            #  This is echogram subscription data. Since each channel has two echogram subscriptions
+            #  (bottom and surface) and we need to build Q telegrams using data from both, we have
+            #  to determine which subscription this is, buffer the data, and if we have both the
+            #  the surface and bottom data for this channel we then need to transmit the Q telegram.
 
-            #  and then send the datagram
-            #self.send_telegram(telegram_bytes)
+            #  first determine if this is a bottom or surface subscription
+            if data['subscriptionId'] in self.surface_echogram_sub_ids:
+                #  this is a surface subscription - buffer the data
+                self.q_data_buffer[data['dataSource']]['surface_ping_number'] = data['pingNumber']
+                self.q_data_buffer[data['dataSource']]['surface_data'] = data['data']
+            elif data['subscriptionId'] in self.bottom_echogram_sub_ids:
+                #  this is a bottom subscription - buffer the data
+                self.q_data_buffer[data['dataSource']]['bottom_ping_number'] = data['pingNumber']
+                self.q_data_buffer[data['dataSource']]['bottom_data'] = data['data']
 
-            #  but for now, print the results
-            print(data)
+            #  compare the ping numbers of the buffered data to determine if we've rx'd both for this ping
+            if (self.q_data_buffer[data['dataSource']]['bottom_ping_number'] ==
+                    self.q_data_buffer[data['dataSource']]['surface_ping_number']):
+
+                #  we have rx'd data from both surface and bottom subs. Create the Q telegram
+                channel_name_bytes = bytes('Q' + str(self.channel_id_map[data['dataSource']]),  'utf-8')
+
+                # get the time properly formatted
+                header_time_bytes = bytes(self.get_header_time(data['pingTime']),  'utf-8')
+
+                #  TVG type- for now, set as '20logR' as required by Echoview; this corresponds to '0' according to EK500 documentation
+                tvg_type_bytes = struct.pack('l', 0)
+
+                #  get bottom depth, layer parameters packaged up as required
+                bottom_depth_bytes = struct.pack('f', data['bottomDepth'])
+                surface_upper_bytes = struct.pack('f', self.configuration['channels'][data['dataSource']]['surface_echogram_start'])
+                #  surface echogram lower bound = surface echogram start + range
+                surface_echogram_lower = self.configuration['channels'][data['dataSource']]['surface_echogram_start'] +self.configuration['channels'][data['dataSource']]['surface_echogram_range']
+                surface_lower_bytes = struct.pack('f', surface_echogram_lower)
+                surface_count = struct.pack('l', self.configuration['channels'][data['dataSource']]['surface_echogram_count'])
+
+                #for bottom echograms - lower = bottom_echogram_start
+                bottom_echogram_upper = data['bottomDepth'] + self.configuration['channels'][data['dataSource']]['bottom_echogram_start']
+                bottom_echogram_lower = bottom_echogram_upper + self.configuration['channels'][data['dataSource']]['bottom_echogram_range']
+                bottom_lower_bytes = struct.pack('f', bottom_echogram_lower)
+                bottom_upper_bytes = struct.pack('f', bottom_echogram_upper)
+                bottom_count = struct.pack('l', self.configuration['channels'][data['dataSource']]['bottom_echogram_count'])
+
+
+                #finally, pack the Echogram data up
+                data_bytes = (self.q_data_buffer[data['dataSource']]['surface_data'].tobytes() +
+                        self.q_data_buffer[data['dataSource']]['bottom_data'].tobytes())
+
+                #also get a 1-space separator char (",")
+                sep = bytes(',',  'utf-8')
+
+                #add it all together for a telegram- this follows EK500 format but there are no separators after TVG type- seems like there should
+                #be something?
+                telegram_bytes = (channel_name_bytes + sep + header_time_bytes + sep +
+                        tvg_type_bytes + bottom_depth_bytes  + surface_upper_bytes +
+                        surface_lower_bytes + surface_count + bottom_upper_bytes +
+                        bottom_lower_bytes + bottom_count + data_bytes)
+
+                #  and then send the datagram
+                self.send_telegram(telegram_bytes)
+
         else:
             print('type: ', data_type)
             print(data)
