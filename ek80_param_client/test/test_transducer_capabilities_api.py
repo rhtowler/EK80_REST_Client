@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -29,15 +29,45 @@ class TestTransducerCapabilitiesApi(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_transducer_capabilities_get(self):
-        """Test case for transducer_capabilities_get
+    def test_get_adcp_transducer_capabilities(self):
+        """Test case for get_adcp_transducer_capabilities
 
+        Get capability information about installed adcp transducers  # noqa: E501
+        """
+        pass
+
+    def test_get_array_transducer_capabilities(self):
+        """Test case for get_array_transducer_capabilities
+
+        Get capability information about installed array transducers  # noqa: E501
+        """
+        pass
+
+    def test_get_single_split_transducer_capabilities(self):
+        """Test case for get_single_split_transducer_capabilities
+
+        Get capability information about installed single split transducers  # noqa: E501
+        """
+        pass
+
+    def test_get_single_transducer_capabilities(self):
+        """Test case for get_single_transducer_capabilities
+
+        Get capability information about installed single transducers  # noqa: E501
+        """
+        pass
+
+    def test_get_transducer_capabilities(self):
+        """Test case for get_transducer_capabilities
+
+        Get general/common information about all installed transducers  # noqa: E501
         """
         pass
 
     def test_transducer_capabilities_get_transducer_capability(self):
         """Test case for transducer_capabilities_get_transducer_capability
 
+        Get information about a specific installed transducer capabilities  # noqa: E501
         """
         pass
 

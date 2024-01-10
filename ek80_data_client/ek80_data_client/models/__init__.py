@@ -4,7 +4,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -64,8 +64,10 @@ from ek80_data_client.models.sample_data_settings import SampleDataSettings
 from ek80_data_client.models.sample_data_subscription_info import SampleDataSubscriptionInfo
 from ek80_data_client.models.sample_data_subscription_specification import SampleDataSubscriptionSpecification
 from ek80_data_client.models.subscription_output_args import SubscriptionOutputArgs
+from ek80_data_client.models.subscription_specification_base import SubscriptionSpecificationBase
 from ek80_data_client.models.subscription_summary import SubscriptionSummary
 from ek80_data_client.models.system_state_settings import SystemStateSettings
+from ek80_data_client.models.system_state_subscription_info import SystemStateSubscriptionInfo
 from ek80_data_client.models.system_state_subscription_specification import SystemStateSubscriptionSpecification
 from ek80_data_client.models.targets_echogram_settings import TargetsEchogramSettings
 from ek80_data_client.models.targets_echogram_subscription_info import TargetsEchogramSubscriptionInfo

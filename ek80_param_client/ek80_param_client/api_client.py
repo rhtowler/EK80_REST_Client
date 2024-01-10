@@ -2,7 +2,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -74,7 +74,7 @@ class ApiClient(object):
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'Swagger-Codegen/0.1.0/python'
+        self.user_agent = 'Swagger-Codegen/23.6.0/python'
 
     def __del__(self):
         if self._pool is not None:

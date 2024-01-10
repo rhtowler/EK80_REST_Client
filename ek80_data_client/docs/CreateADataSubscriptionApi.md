@@ -28,6 +28,8 @@ Method | HTTP request | Description
 
 Create an adcp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_backscatter.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -73,6 +75,8 @@ No authorization required
 > int create_adcp_beam_data_subscription(specification)
 
 Create an adcp data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_beamdata.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -120,6 +124,8 @@ No authorization required
 
 Create an adcp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_bottom_detector.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -165,6 +171,8 @@ No authorization required
 > int create_adcp_output_subscription(specification)
 
 Create an adcp data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_output.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -212,6 +220,8 @@ No authorization required
 
 Create an adcp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_quality_factor.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -257,6 +267,8 @@ No authorization required
 > int create_adcp_velocity_subscription(specification)
 
 Create an adcp data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_velocity.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -304,6 +316,8 @@ No authorization required
 
 Create a bottom detection data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_bottom_detection.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -349,6 +363,8 @@ No authorization required
 > int create_echogram_subscription(specification)
 
 Create an echogram data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_echogram.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -396,6 +412,8 @@ No authorization required
 
 Create an integration chirp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration_chirp.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -441,6 +459,8 @@ No authorization required
 > int create_integration_subscription(specification)
 
 Create an integration data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -488,6 +508,8 @@ No authorization required
 
 Create a noise spectrum data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_noise_spectrum.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -533,6 +555,8 @@ No authorization required
 > int create_sample_data_subscription(specification)
 
 Create a processed sample-data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_sample_data.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -580,6 +604,8 @@ No authorization required
 
 Create a system state data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_system_state.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -625,6 +651,8 @@ No authorization required
 > int create_targets_echogram_subscription(specification)
 
 Create a targets echogram data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_targets_echogram.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -672,6 +700,8 @@ No authorization required
 
 Create a targets integration data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -718,6 +748,8 @@ No authorization required
 
 Create a ts detection chirp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection_chirp.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function
@@ -763,6 +795,8 @@ No authorization required
 > int create_ts_detection_subscription(specification)
 
 Create a ts detection data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python

@@ -1,0 +1,392 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+// To build manually:
+//
+// From PowerShell:
+//cd 'D:\GitRepos\Simrad\Simrad.Winson\Source\Remoting Services\DataPublisher'
+// &"V:\Main\installed\x64-windows\tools\protobuf\protoc.exe" --proto_path=. --cpp_out=. sounder.proto
+
+package dp;
+
+message ComplexFloat32
+{
+	float real = 1;
+	float imag = 2;
+}
+
+//START - Messages used by SampleDataDatagram as ANY
+message Complex1Float32Data
+{
+	ComplexFloat32 value = 1;
+}
+message Complex4Float32Data
+{
+	ComplexFloat32 value1 = 1;
+	ComplexFloat32 value2 = 2;
+	ComplexFloat32 value3 = 3;
+	ComplexFloat32 value4 = 4;
+}
+message PowerAngleData
+{
+	int32 power = 1;
+	int32 angle = 2;
+}
+message ShortData
+{
+	int32 value = 1;
+}
+message Float32Data
+{
+	float value = 1;
+}
+//END - Messages used by SampleDataDatagram as ANY
+
+message BottomDetectionDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
+
+	string   data_source = 4;
+	
+	double	bottom_depth = 5;
+	double	reflectivity = 6;
+	double	vessel_log_distance = 7;
+	double	transducer_depth = 8;
+	int32   quality_flag = 9;           // -2 Bottom = 0.0,-1 Bottom = syntetic depth ,0 Bottom = ordinary bottom depth
+}
+
+message IntegrationDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
+	
+	string   data_source = 4;
+	
+	int32   status_value = 5;
+	double	sa = 6;
+	double	distance = 7;
+	repeated float frequency_limits = 8;
+	uint32  spectrum_count = 9;
+	repeated float frequency_spectrum = 10;
+}
+
+message AdcpVelocityDatagram
+{
+	uint32  datagram_id = 1;
+	uint32  datagram_size = 2;									// [byte] Total size of datagram
+
+	uint32  ping_number = 3;
+	uint64  ping_time = 4;										// [100 nanoseconds] since 01.01 1601
+
+	string   data_source = 5;
+
+	float start_range = 6;
+	float total_range = 7;
+	float transducer_depth = 8;
+	repeated float depth_to_bottom = 9;
+	float blanking_zone = 10;
+	uint32 cell_size_samples = 11;
+	uint32 processing_result = 12;
+	bool is_valid_bottom_data = 13;
+
+	repeated VelocityVector data_last = 14;
+	repeated VelocityVector data_avg = 15;
+}
+
+message VelocityVector 
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+
+//TODO. Decide what to export UH?
+message AdcpOutputDatagram
+{
+	uint32  datagram_id = 1;
+	uint32  datagram_size = 2;									// [byte] Total size of datagram
+
+	uint32  ping_number = 3;
+	uint64  ping_time = 4;										// [100 nanoseconds] since 01.01 1601
+
+	string   data_source = 5;
+
+	float start_range = 6;
+	float total_range = 7;
+
+	repeated BeamAdcpDoubleData velocity = 8;
+	repeated BeamAdcpDoubleData correlation = 9;
+	repeated BeamAdcpIntData intensity = 10;
+}
+
+message BeamAdcpDoubleData
+{
+	uint64 id = 1;
+	repeated double data = 2;
+}
+
+message BeamAdcpIntData
+{
+	uint64 id = 1;
+	repeated int32 data = 2;
+}
+
+
+message BeamDataAdcpDatagram
+{
+	uint32  datagram_id = 1;
+	uint32  datagram_size = 2;									// [byte] Total size of datagram
+
+	uint32  ping_number = 3;
+	uint64  ping_time = 4;			
+
+	string   name = 5;
+
+	float start_range = 6;
+	float total_range = 7;
+	int32 processing_result = 8;
+	repeated double data = 9;
+};
+
+message QualityDataAdcpDatagram
+{
+	uint32  datagram_id = 1;
+	uint32  datagram_size = 2;									// [byte] Total size of datagram
+
+	uint32  ping_number = 3;
+	uint64  ping_time = 4;			
+
+	string name = 5;
+
+	float start_range = 6;
+	float total_range = 7;
+	int32 processing_result = 8;
+	
+	float percent_good = 9;
+	float correlation_factor_limit = 10;
+	float error_velocity_limit = 11;
+	int32 sv_dbw_low_limit = 12;
+	int32 sv_dbw_high_limit = 13;
+
+	repeated double data = 14;
+};
+
+message BottomDetectionAdcpDatagram
+{
+	uint32  datagram_id = 1;
+	uint32  datagram_size = 2;									// [byte] Total size of datagram
+
+	uint32  ping_number = 3;
+	uint64  ping_time = 4;	
+
+	bool is_valid_bottom_data = 5;
+	repeated float slant_range_to_bottom_backscatter = 6;
+	repeated float slant_range_to_bottom_correlation = 7;
+	repeated float depth_to_bottom_correlation = 8;
+	float transducer_depth = 9;
+	repeated int32 bottom_depth_index = 10;
+	bool is_bottom_detection_active = 11;
+};
+
+message SampleDataDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
+
+	string  name = 4;
+
+	uint64  start_index = 5;
+	uint64  total_number_of_samples = 6;
+	float   total_range = 7;
+	float   center_frequency = 8;
+
+	enum SampleDataFormat 
+	{
+		NoData = 0;
+		PowerAngle = 1;
+		Complex1Float16 = 2;
+		Complex4Float16 = 3;
+		Complex1Float32 = 4;
+		Complex3Float32 = 5;
+		Complex4Float32 = 6;
+		MixedPowerComplex = 7;
+		AveragedFrequencyData = 8;
+		Short = 9;
+		Float32 = 10;
+	}
+	SampleDataFormat data_format = 9;
+	repeated BeamData data = 10;
+}
+
+message BeamData
+{
+	uint64 id = 1;
+	string beam_name = 2;
+	uint64 num_samples = 3;
+	repeated google.protobuf.Any data = 4;
+}
+
+message EchogramDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
+
+	string   data_source = 4;
+	
+	int64	start_index = 5;
+	int64	total_number_of_samples = 6;
+	float	start_range = 7;
+	float	total_range = 8;
+	float	bottom_depth = 9;
+	int32	processing_result = 10;
+	repeated int32 data = 11;
+}
+
+message TSDetectionDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601
+
+	string   data_source = 4;
+	
+	repeated float frequency_limits = 5;
+	repeated EchoTrace traces = 6;
+}
+
+message TSDetectionChirpDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+
+	uint32  ping_number = 2;
+	uint64  ping_time = 3;										// [100 nanoseconds] since 01.01 1601 
+
+	string   data_source = 4;
+	
+	repeated float frequency_limits = 5;
+	repeated EchoTraceChirp traces = 6;
+}
+
+message EchoTraceChirp
+{
+	double depth = 1;
+	double ts_compensated = 2;
+	double ts_uncompensated = 3;
+	double alongship_angle = 4;
+	double athwartship_angle = 5;
+	double sa = 6;
+	repeated float compensated_frequency_response = 7;
+	repeated float uncompensated_frequency_response = 8;
+	repeated int32 within_max_beam_compensation = 9;
+}
+
+message EchoTrace
+{
+	double depth = 1;
+	double ts_compensated = 2;
+	double ts_uncompensated = 3;
+	double alongship_angle = 4;
+	double athwartship_angle = 5;
+	double sa = 6;
+}
+
+enum OperationMode 
+{
+	Inactive= 0;
+	Normal = 1;
+	Replay = 2;
+	Simulation = 3;
+}
+
+enum PingMode
+{
+	SinglePing = 0;
+	Intervl = 1;
+	Maximum = 2;
+}
+
+enum PlayState
+{
+	Stopped = 0;
+	Running = 1;
+	Paused = 2;
+}
+
+message	PingInfo
+{
+	uint32  ping_number = 1;
+	uint64  ping_time = 2;			// [100 nanoseconds] since 01.01 1601
+	double latitude = 3;				// [º] signed decimal degrees, S = neg. value
+	double longitude = 4;			// [º] signed decimal degrees, W = neg. value
+	float heading = 5;				// [º]
+	float course = 6;				// [º]
+	float speed_over_ground = 7;	// [m/s]
+	float heave = 8;				// [m]
+	float pitch = 9;				// [º]
+	float roll = 10;				// [º]
+}
+
+enum ExternalSyncMode
+{
+	StandAlone = 0;
+	Master = 1;
+	Slave = 2;
+}
+
+message ExternalSync
+{
+	ExternalSyncMode sync_mode = 1;
+	int32 delay = 2;
+}
+
+message OperationalState
+{
+	OperationMode  operation_mode = 1;
+	PingMode ping_mode = 2;
+	PlayState play_state = 3;
+	int32 ping_interval = 4;
+	ExternalSync external_sync = 5;
+	string active_user_setting = 6;
+}
+
+message NavigationData
+{
+	double latitude = 1;
+	double longitude = 2;
+	float depth = 3;
+	float speed = 4;
+	float course = 5;
+	float heading = 6;
+};
+
+message MotionData
+{
+	float heave = 1;
+	float pitch = 2;
+	float roll = 3;
+	float sway = 4;
+	float surge = 5;
+	float yaw = 6;
+};
+
+message SystemStateDatagram
+{
+	uint64  subscription_id = 1;								// id of the subscription, can be used to differentiate between multiples of same type
+	uint64  current_time = 2;									// [100 nanoseconds] since 01.01 1601
+	NavigationData current_navigation = 3;
+	MotionData current_motion = 4;
+	OperationalState current_operational_state = 5;
+	string ping_configuration_change_hint = 6;
+	PingInfo last_ping = 7;										// last completed ping
+}

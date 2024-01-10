@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -32,59 +32,60 @@ class TestPingConfigurationApi(unittest.TestCase):
     def test_ping_configuration_get_channel_pulse_settings(self):
         """Test case for ping_configuration_get_channel_pulse_settings
 
-        Get pulse settings for a given channel  # noqa: E501
+        Get pulse settings for a specific channel  # noqa: E501
         """
         pass
 
     def test_ping_configuration_get_channel_transmit_power(self):
         """Test case for ping_configuration_get_channel_transmit_power
 
-        Get transmit power for a given channel  # noqa: E501
+        Get transmit power for a specific channel  # noqa: E501
         """
         pass
 
     def test_ping_configuration_get_channels(self):
         """Test case for ping_configuration_get_channels
 
-        """
-        pass
-
-    def test_ping_configuration_get_ping_configuration(self):
-        """Test case for ping_configuration_get_ping_configuration
-
-        Get adcp ping configuration  # noqa: E501
-        """
-        pass
-
-    def test_ping_configuration_get_transceiver_sequencing(self):
-        """Test case for ping_configuration_get_transceiver_sequencing
-
+        Get information about all installed channels  # noqa: E501
         """
         pass
 
     def test_ping_configuration_set_channel_pulse_settings(self):
         """Test case for ping_configuration_set_channel_pulse_settings
 
-        Set pulse settings for a given channel  # noqa: E501
+        Set pulse settings for a specific channel  # noqa: E501
         """
         pass
 
     def test_ping_configuration_set_channel_transmit_power(self):
         """Test case for ping_configuration_set_channel_transmit_power
 
-        Set transmit power for a given channel  # noqa: E501
+        Set transmit power for a specific channel  # noqa: E501
         """
         pass
 
-    def test_ping_configuration_set_ping_configuration(self):
-        """Test case for ping_configuration_set_ping_configuration
+    def test_ping_ek80_configuration_get_ping_configuration(self):
+        """Test case for ping_ek80_configuration_get_ping_configuration
+
+        Get adcp ping configuration  # noqa: E501
+        """
+        pass
+
+    def test_ping_ek80_configuration_get_transceiver_sequencing(self):
+        """Test case for ping_ek80_configuration_get_transceiver_sequencing
+
+        """
+        pass
+
+    def test_ping_ek80_configuration_set_ping_configuration(self):
+        """Test case for ping_ek80_configuration_set_ping_configuration
 
         Set adcp ping configuration  # noqa: E501
         """
         pass
 
-    def test_ping_configuration_set_transceiver_sequencing(self):
-        """Test case for ping_configuration_set_transceiver_sequencing
+    def test_ping_ek80_configuration_set_transceiver_sequencing(self):
+        """Test case for ping_ek80_configuration_set_transceiver_sequencing
 
         """
         pass

@@ -17,6 +17,8 @@ Method | HTTP request | Description
 
 Create an integration chirp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration_chirp.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function

@@ -6,6 +6,8 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**create_system_state_subscription**](SystemStateSubscriptionsApi.md#create_system_state_subscription) | **POST** /api/sounder/data-output/system-state-subscriptions | Create a system state data subscription
 [**delete_system_state_subscription**](SystemStateSubscriptionsApi.md#delete_system_state_subscription) | **DELETE** /api/sounder/data-output/system-state-subscriptions/{subscriptionId} | Delete a system state detection data subscription
+[**get_system_state_subscription**](SystemStateSubscriptionsApi.md#get_system_state_subscription) | **GET** /api/sounder/data-output/system-state-subscriptions/{subscriptionId} | Get a system state subscription specification
+[**get_system_state_subscriptions**](SystemStateSubscriptionsApi.md#get_system_state_subscriptions) | **GET** /api/sounder/data-output/system-state-subscriptions | Get all system state data subscriptions
 [**update_system_state_subscription**](SystemStateSubscriptionsApi.md#update_system_state_subscription) | **PUT** /api/sounder/data-output/system-state-subscriptions/{subscriptionId} | Update a system state data subscription
 
 
@@ -13,6 +15,8 @@ Method | HTTP request | Description
 > int create_system_state_subscription(specification)
 
 Create a system state data subscription
+
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_system_state.html\" target=\"foo\">parameter description</a>.
 
 ### Example
 ```python
@@ -88,6 +92,94 @@ Name | Type | Description  | Notes
 ### Return type
 
 void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_system_state_subscription**
+> SubscriptionSpecificationBase get_system_state_subscription(subscription_id)
+
+Get a system state subscription specification
+
+### Example
+```python
+from __future__ import print_function
+import time
+import ek80_data_client
+from ek80_data_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = ek80_data_client.SystemStateSubscriptionsApi()
+subscription_id = 789 # int | The unique id of the subscription
+
+try:
+    # Get a system state subscription specification
+    api_response = api_instance.get_system_state_subscription(subscription_id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling SystemStateSubscriptionsApi->get_system_state_subscription: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **subscription_id** | **int**| The unique id of the subscription | 
+
+### Return type
+
+[**SubscriptionSpecificationBase**](SubscriptionSpecificationBase.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_system_state_subscriptions**
+> list[SystemStateSubscriptionInfo] get_system_state_subscriptions()
+
+Get all system state data subscriptions
+
+### Example
+```python
+from __future__ import print_function
+import time
+import ek80_data_client
+from ek80_data_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = ek80_data_client.SystemStateSubscriptionsApi()
+
+try:
+    # Get all system state data subscriptions
+    api_response = api_instance.get_system_state_subscriptions()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling SystemStateSubscriptionsApi->get_system_state_subscriptions: %s\n" % e)
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**list[SystemStateSubscriptionInfo]**](SystemStateSubscriptionInfo.md)
 
 ### Authorization
 

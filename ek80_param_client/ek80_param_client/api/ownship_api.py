@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -34,7 +34,7 @@ class OwnshipApi(object):
         self.api_client = api_client
 
     def ownship_get_dimension(self, **kwargs):  # noqa: E501
-        """ownship_get_dimension  # noqa: E501
+        """Get ownship dimension settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -54,7 +54,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_get_dimension_with_http_info(self, **kwargs):  # noqa: E501
-        """ownship_get_dimension  # noqa: E501
+        """Get ownship dimension settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -123,7 +123,7 @@ class OwnshipApi(object):
             collection_formats=collection_formats)
 
     def ownship_get_drop_keel_offset(self, **kwargs):  # noqa: E501
-        """Get Drop keel offset  # noqa: E501
+        """Get drop keel offset  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -143,7 +143,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_get_drop_keel_offset_with_http_info(self, **kwargs):  # noqa: E501
-        """Get Drop keel offset  # noqa: E501
+        """Get drop keel offset  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -479,7 +479,7 @@ class OwnshipApi(object):
             collection_formats=collection_formats)
 
     def ownship_get_motion(self, **kwargs):  # noqa: E501
-        """ownship_get_motion  # noqa: E501
+        """Get ownship motion settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -499,7 +499,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_get_motion_with_http_info(self, **kwargs):  # noqa: E501
-        """ownship_get_motion  # noqa: E501
+        """Get ownship motion settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -568,7 +568,7 @@ class OwnshipApi(object):
             collection_formats=collection_formats)
 
     def ownship_get_navigation(self, **kwargs):  # noqa: E501
-        """ownship_get_navigation  # noqa: E501
+        """Get ownship navigation settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -588,7 +588,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_get_navigation_with_http_info(self, **kwargs):  # noqa: E501
-        """ownship_get_navigation  # noqa: E501
+        """Get ownship navigation settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -657,7 +657,7 @@ class OwnshipApi(object):
             collection_formats=collection_formats)
 
     def ownship_get_ownship(self, **kwargs):  # noqa: E501
-        """ownship_get_ownship  # noqa: E501
+        """Get ownship settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -677,7 +677,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_get_ownship_with_http_info(self, **kwargs):  # noqa: E501
-        """ownship_get_ownship  # noqa: E501
+        """Get ownship settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -835,7 +835,7 @@ class OwnshipApi(object):
             collection_formats=collection_formats)
 
     def ownship_set_drop_keel_offset(self, dropkeel_settings, **kwargs):  # noqa: E501
-        """Set Drop keel offset  # noqa: E501
+        """Set drop keel offset  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -856,7 +856,7 @@ class OwnshipApi(object):
             return data
 
     def ownship_set_drop_keel_offset_with_http_info(self, dropkeel_settings, **kwargs):  # noqa: E501
-        """Set Drop keel offset  # noqa: E501
+        """Set drop keel offset  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True

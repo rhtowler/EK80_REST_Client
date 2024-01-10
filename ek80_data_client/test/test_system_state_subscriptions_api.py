@@ -3,7 +3,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -40,6 +40,20 @@ class TestSystemStateSubscriptionsApi(unittest.TestCase):
         """Test case for delete_system_state_subscription
 
         Delete a system state detection data subscription  # noqa: E501
+        """
+        pass
+
+    def test_get_system_state_subscription(self):
+        """Test case for get_system_state_subscription
+
+        Get a system state subscription specification  # noqa: E501
+        """
+        pass
+
+    def test_get_system_state_subscriptions(self):
+        """Test case for get_system_state_subscriptions
+
+        Get all system state data subscriptions  # noqa: E501
         """
         pass
 

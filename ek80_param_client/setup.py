@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -14,7 +14,7 @@
 from setuptools import setup, find_packages  # noqa: H301
 
 NAME = "ek80_param_client"
-VERSION = "0.1.0"
+VERSION = "23.6.0"
 # To install the library, run the following
 #
 # python setup.py install
@@ -41,6 +41,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     long_description="""\
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
     """
 )

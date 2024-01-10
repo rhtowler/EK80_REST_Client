@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -39,7 +39,9 @@ class RxFan(object):
         'sampling_info': 'SamplingInfo',
         'beam_type': 'str',
         'beams': 'list[RxBeam]',
-        'filter_stages': 'list[FilterStage]'
+        'filter_stages': 'list[FilterStage]',
+        'ping_name': 'str',
+        'transducer_name': 'str'
     }
 
     attribute_map = {
@@ -51,10 +53,12 @@ class RxFan(object):
         'sampling_info': 'sampling-info',
         'beam_type': 'beam-type',
         'beams': 'beams',
-        'filter_stages': 'filter-stages'
+        'filter_stages': 'filter-stages',
+        'ping_name': 'ping-name',
+        'transducer_name': 'transducer-name'
     }
 
-    def __init__(self, fan_name=None, delay=None, range=None, absorption_coefficient=None, geometry=None, sampling_info=None, beam_type=None, beams=None, filter_stages=None):  # noqa: E501
+    def __init__(self, fan_name=None, delay=None, range=None, absorption_coefficient=None, geometry=None, sampling_info=None, beam_type=None, beams=None, filter_stages=None, ping_name=None, transducer_name=None):  # noqa: E501
         """RxFan - a model defined in Swagger"""  # noqa: E501
 
         self._fan_name = None
@@ -66,6 +70,8 @@ class RxFan(object):
         self._beam_type = None
         self._beams = None
         self._filter_stages = None
+        self._ping_name = None
+        self._transducer_name = None
         self.discriminator = None
 
         if fan_name is not None:
@@ -86,6 +92,10 @@ class RxFan(object):
             self.beams = beams
         if filter_stages is not None:
             self.filter_stages = filter_stages
+        if ping_name is not None:
+            self.ping_name = ping_name
+        if transducer_name is not None:
+            self.transducer_name = transducer_name
 
     @property
     def fan_name(self):
@@ -281,6 +291,48 @@ class RxFan(object):
         """
 
         self._filter_stages = filter_stages
+
+    @property
+    def ping_name(self):
+        """Gets the ping_name of this RxFan.  # noqa: E501
+
+
+        :return: The ping_name of this RxFan.  # noqa: E501
+        :rtype: str
+        """
+        return self._ping_name
+
+    @ping_name.setter
+    def ping_name(self, ping_name):
+        """Sets the ping_name of this RxFan.
+
+
+        :param ping_name: The ping_name of this RxFan.  # noqa: E501
+        :type: str
+        """
+
+        self._ping_name = ping_name
+
+    @property
+    def transducer_name(self):
+        """Gets the transducer_name of this RxFan.  # noqa: E501
+
+
+        :return: The transducer_name of this RxFan.  # noqa: E501
+        :rtype: str
+        """
+        return self._transducer_name
+
+    @transducer_name.setter
+    def transducer_name(self, transducer_name):
+        """Sets the transducer_name of this RxFan.
+
+
+        :param transducer_name: The transducer_name of this RxFan.  # noqa: E501
+        :type: str
+        """
+
+        self._transducer_name = transducer_name
 
     def to_dict(self):
         """Returns the model properties as a dict"""

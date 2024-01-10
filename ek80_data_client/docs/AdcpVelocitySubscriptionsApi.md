@@ -16,6 +16,8 @@ Method | HTTP request | Description
 
 Create an adcp data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_velocity.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function

@@ -39,8 +39,9 @@ import numpy as np
 import ek80_data_client
 import ek80_param_client
 from google.protobuf.json_format import MessageToDict
-import ek80_datagrams_v2115_pb2 as ek80_datagrams_pb2
+import ek80_datagrams_v2360_pb2 as ek80_datagrams_pb2
 from PyQt5 import QtCore
+
 
 
 class ek80_rest_client(QtCore.QObject):
@@ -105,6 +106,7 @@ class ek80_rest_client(QtCore.QObject):
         '''
         get_navigation returns the current lat/lon, course, speed, heading, and vessel log
         '''
+
         osa = ek80_param_client.OwnshipApi()
         return osa.ownship_get_navigation()
 
@@ -534,7 +536,6 @@ class ek80_rest_client(QtCore.QObject):
             for sub in subscriptions:
                 #  as we add new subscription types, we need to expand this code
                 #  to handle deleting them.
-                print("removing sub: ", sub)
                 if sub.subscription_type == 'bottom detection':
                     self.delete_bottom_detection_subscription(sub.subscription_id,
                             endpoint_id=endpoint_id, cleanup=True)

@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -33,12 +33,368 @@ class TransducerCapabilitiesApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def transducer_capabilities_get(self, **kwargs):  # noqa: E501
-        """transducer_capabilities_get  # noqa: E501
+    def get_adcp_transducer_capabilities(self, **kwargs):  # noqa: E501
+        """Get capability information about installed adcp transducers  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.transducer_capabilities_get(async_req=True)
+        >>> thread = api.get_adcp_transducer_capabilities(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[AdcpTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.get_adcp_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+        else:
+            (data) = self.get_adcp_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+            return data
+
+    def get_adcp_transducer_capabilities_with_http_info(self, **kwargs):  # noqa: E501
+        """Get capability information about installed adcp transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_adcp_transducer_capabilities_with_http_info(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[AdcpTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = []  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method get_adcp_transducer_capabilities" % key
+                )
+            params[key] = val
+        del params['kwargs']
+
+        collection_formats = {}
+
+        path_params = {}
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/transducer-capabilities/adcp-transducers', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='list[AdcpTransducerCapabilities]',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def get_array_transducer_capabilities(self, **kwargs):  # noqa: E501
+        """Get capability information about installed array transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_array_transducer_capabilities(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[ArrayTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.get_array_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+        else:
+            (data) = self.get_array_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+            return data
+
+    def get_array_transducer_capabilities_with_http_info(self, **kwargs):  # noqa: E501
+        """Get capability information about installed array transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_array_transducer_capabilities_with_http_info(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[ArrayTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = []  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method get_array_transducer_capabilities" % key
+                )
+            params[key] = val
+        del params['kwargs']
+
+        collection_formats = {}
+
+        path_params = {}
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/transducer-capabilities/array-transducers', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='list[ArrayTransducerCapabilities]',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def get_single_split_transducer_capabilities(self, **kwargs):  # noqa: E501
+        """Get capability information about installed single split transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_single_split_transducer_capabilities(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[SingleSplitTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.get_single_split_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+        else:
+            (data) = self.get_single_split_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+            return data
+
+    def get_single_split_transducer_capabilities_with_http_info(self, **kwargs):  # noqa: E501
+        """Get capability information about installed single split transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_single_split_transducer_capabilities_with_http_info(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[SingleSplitTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = []  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method get_single_split_transducer_capabilities" % key
+                )
+            params[key] = val
+        del params['kwargs']
+
+        collection_formats = {}
+
+        path_params = {}
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/transducer-capabilities/single-split-transducers', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='list[SingleSplitTransducerCapabilities]',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def get_single_transducer_capabilities(self, **kwargs):  # noqa: E501
+        """Get capability information about installed single transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_single_transducer_capabilities(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[SingleTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.get_single_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+        else:
+            (data) = self.get_single_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
+            return data
+
+    def get_single_transducer_capabilities_with_http_info(self, **kwargs):  # noqa: E501
+        """Get capability information about installed single transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_single_transducer_capabilities_with_http_info(async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :return: list[SingleTransducerCapabilities]
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = []  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method get_single_transducer_capabilities" % key
+                )
+            params[key] = val
+        del params['kwargs']
+
+        collection_formats = {}
+
+        path_params = {}
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/transducer-capabilities/single-transducers', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='list[SingleTransducerCapabilities]',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def get_transducer_capabilities(self, **kwargs):  # noqa: E501
+        """Get general/common information about all installed transducers  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.get_transducer_capabilities(async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -48,17 +404,17 @@ class TransducerCapabilitiesApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.transducer_capabilities_get_with_http_info(**kwargs)  # noqa: E501
+            return self.get_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
         else:
-            (data) = self.transducer_capabilities_get_with_http_info(**kwargs)  # noqa: E501
+            (data) = self.get_transducer_capabilities_with_http_info(**kwargs)  # noqa: E501
             return data
 
-    def transducer_capabilities_get_with_http_info(self, **kwargs):  # noqa: E501
-        """transducer_capabilities_get  # noqa: E501
+    def get_transducer_capabilities_with_http_info(self, **kwargs):  # noqa: E501
+        """Get general/common information about all installed transducers  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.transducer_capabilities_get_with_http_info(async_req=True)
+        >>> thread = api.get_transducer_capabilities_with_http_info(async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -78,7 +434,7 @@ class TransducerCapabilitiesApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method transducer_capabilities_get" % key
+                    " to method get_transducer_capabilities" % key
                 )
             params[key] = val
         del params['kwargs']
@@ -123,7 +479,7 @@ class TransducerCapabilitiesApi(object):
             collection_formats=collection_formats)
 
     def transducer_capabilities_get_transducer_capability(self, channelid, **kwargs):  # noqa: E501
-        """transducer_capabilities_get_transducer_capability  # noqa: E501
+        """Get information about a specific installed transducer capabilities  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -131,7 +487,7 @@ class TransducerCapabilitiesApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param str channelid: (required)
+        :param str channelid: The virtual channel id (required)
         :return: TransducerCapabilities
                  If the method is called asynchronously,
                  returns the request thread.
@@ -144,7 +500,7 @@ class TransducerCapabilitiesApi(object):
             return data
 
     def transducer_capabilities_get_transducer_capability_with_http_info(self, channelid, **kwargs):  # noqa: E501
-        """transducer_capabilities_get_transducer_capability  # noqa: E501
+        """Get information about a specific installed transducer capabilities  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
@@ -152,7 +508,7 @@ class TransducerCapabilitiesApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param str channelid: (required)
+        :param str channelid: The virtual channel id (required)
         :return: TransducerCapabilities
                  If the method is called asynchronously,
                  returns the request thread.

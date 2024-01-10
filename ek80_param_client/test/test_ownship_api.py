@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -32,13 +32,14 @@ class TestOwnshipApi(unittest.TestCase):
     def test_ownship_get_dimension(self):
         """Test case for ownship_get_dimension
 
+        Get ownship dimension settings  # noqa: E501
         """
         pass
 
     def test_ownship_get_drop_keel_offset(self):
         """Test case for ownship_get_drop_keel_offset
 
-        Get Drop keel offset  # noqa: E501
+        Get drop keel offset  # noqa: E501
         """
         pass
 
@@ -66,18 +67,21 @@ class TestOwnshipApi(unittest.TestCase):
     def test_ownship_get_motion(self):
         """Test case for ownship_get_motion
 
+        Get ownship motion settings  # noqa: E501
         """
         pass
 
     def test_ownship_get_navigation(self):
         """Test case for ownship_get_navigation
 
+        Get ownship navigation settings  # noqa: E501
         """
         pass
 
     def test_ownship_get_ownship(self):
         """Test case for ownship_get_ownship
 
+        Get ownship settings  # noqa: E501
         """
         pass
 
@@ -91,7 +95,7 @@ class TestOwnshipApi(unittest.TestCase):
     def test_ownship_set_drop_keel_offset(self):
         """Test case for ownship_set_drop_keel_offset
 
-        Set Drop keel offset  # noqa: E501
+        Set drop keel offset  # noqa: E501
         """
         pass
 

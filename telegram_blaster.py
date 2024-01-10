@@ -1,18 +1,21 @@
 """
 telegram_blaster.py
 
-This application creates bottom depth and echogram subscriptions for
-all channels and then broadcasts Q Telegrams derived from these data
-on the network. This can be used to send data to Echolog500 for
-"liveview" applications where Echolog80 does not work well.
+telegram_blaster connects to an instance of the EK80 application using
+the REST interface and creates bottom depth and echogram subscriptions for
+the channels defined in the telegram_blaster.yml config file. It then 
+broadcasts EK500 Q Telegrams derived from these data on the network.
+
+This can be used to send data to Echolog500 for "liveview" applications
+where Echolog80 does not work well.
 
 
 """
 
-import datetime
 import struct
 import logging
 import collections
+import datetime
 import yaml
 import urllib3
 from PyQt5 import QtCore, QtNetwork
@@ -22,6 +25,13 @@ import ek80_rest_client
 class telegram_blaster(QtCore.QObject):
 
     stopClient = QtCore.pyqtSignal()
+
+    #  specify the delay, in seconds, between when the application connects
+    #  and when it tries to create subscriptions. If telegram_blaster is
+    #  already running when you start EK80, it can request the list of channels
+    #  before the EK80 application has fully initialized resulting in an
+    #  empty channel list. 
+    CONNECT_DELAY = 10
 
     def __init__(self, config_file, clean_server=False, parent=None):
         #  initialize the superclass
@@ -33,6 +43,7 @@ class telegram_blaster(QtCore.QObject):
 
         #  define some initial properties
         self.udp_socket = None
+        self.just_connected = False
 
         #  create a timer for polling the server
         self.param_timer = QtCore.QTimer(self)
@@ -41,6 +52,7 @@ class telegram_blaster(QtCore.QObject):
         #  create a timer for reestablishing a lost connection.
         self.retry_timer = QtCore.QTimer(self)
         self.retry_timer.timeout.connect(self.reestablish_connection)
+        self.retry_timer.setSingleShot(True)
 
         #  start things up after we get the event loop running by using a timer
         QtCore.QTimer.singleShot(0, self.start_app)
@@ -109,9 +121,8 @@ class telegram_blaster(QtCore.QObject):
             self.clients[client_id] = {'host_address':host_address, 'port':port}
 
         #  set the connection retry timer interval
-        self.retry_timer.setInterval(self.configuration['application']['lost_server_retry_interval_ms'])
-        self.retry_timer.setSingleShot(True)
-
+        self.retry_timer_interval = self.configuration['application']['lost_server_retry_interval_ms']
+        
         #  lastly, set the polling timer interval and start it
         self.param_timer.setInterval(self.configuration['application']['polled_param_interval_ms'])
 
@@ -129,10 +140,10 @@ class telegram_blaster(QtCore.QObject):
         #  apps after they crash and leave their bits around on the server.
         if self.clean_server:
             self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
-            try:
-                self.client.cleanup_server()
-            except:
-                pass
+#           try:
+            self.client.cleanup_server()
+#            except:
+#                pass
 
         #  create our subscriptions
         try:
@@ -163,6 +174,7 @@ class telegram_blaster(QtCore.QObject):
         self.bottom_echogram_sub_ids = []
         self.channel_id_map = {}
         self.last_vl_ping = -1
+        self.last_q_channel_number = 0
 
         #  Q telegrams contain data from both the surface and bottom echogram subscriptions.
         #  Since these data are received in separate callback calls, we need to buffer the
@@ -186,7 +198,14 @@ class telegram_blaster(QtCore.QObject):
                     self.logger.info("Adding channel %s ", channel)
 
                     #  Create a mapping of channel ID to telegram number
-                    self.channel_id_map[channel] = channel_config['q_telegram_channel']
+                    if 'q_telegram_channel' in channel_config:
+                        self.channel_id_map[channel] = channel_config['q_telegram_channel']
+                        self.last_q_channel_number = channel_config['q_telegram_channel']
+                    else:
+                        #  the channel number isn't defined, make one up
+                        this_q_channel_number = self.last_q_channel_number + 1
+                        self.channel_id_map[channel] = this_q_channel_number
+                        self.last_q_channel_number = this_q_channel_number
 
                     #  initialize the Q datagram buffer for this channel - we'll use ping
                     #  number to determine if we've rx'd data from both subscriptions
@@ -256,6 +275,24 @@ class telegram_blaster(QtCore.QObject):
 
                 #  and then send the datagram
                 self.send_telegram(gl_bytes)
+                
+                
+            #  THIS BLOCK SHOULD BE USED IN CONJUNCTION WITH A CHECK AGAINST
+            #  A LIST OF SUBSCRIBED CHANNELS TO DETERMINE IF A NEW CHANNEL HAS
+            #  BEEN ADDED OR ONE HAS BEEN REMOVED. ADDITIONAL CODE WILL NEED TO BE
+            #  ADDED TO PERFORM THE COMPARISON AND ADD OR REMOVE SPECIFIC CHANNELS.
+            #  THE CURRENT DESIGN ADDS ALL CHANNELS AT ONCE IN CREATE_SUBSCRIPTIONS
+            #  AND THIS WILL NEED TO BE CHANGED TO ADD ONE SUBSCRIPTION AT A TIME
+            #  wILL ALSO NEED TO ADD A METHOD TO REMOVE A SPECIFIC SUBSCRIPTION.
+#            #  
+#            if len(self.channels) == 0:
+#                print("NOONAN!")
+#                self.channels = self.client.get_channels()
+#            else:
+#                print("GotChans!")
+                
+        except urllib3.exceptions.NewConnectionError:
+            print("CON ERROR")
 
         except urllib3.exceptions.MaxRetryError:
             #  we've lost connection - stop polling and start trying to reconnect
@@ -270,25 +307,54 @@ class telegram_blaster(QtCore.QObject):
 
     @QtCore.pyqtSlot()
     def reestablish_connection(self):
+        '''
+        reestablish_connection is called by the retry_timer to periodically
+        try to connect to the EK80 application after the connection is lost.
+        This allows telegram_blaster to automatically reconnect after the
+        EK80 has been restarted.
+        '''
 
-        self.logger.info("Trying to (re)connect to EK80 server")
+        #  check if we just connected, or if we're still trying to connect
+        if not self.just_connected:
 
-        #  try to get the navigation data. This call will succeed
-        try:
-            _ = self.client.get_navigation()
+            self.logger.info("Trying to (re)connect to EK80 server")
 
-        except Exception:
-            self.retry_timer.start()
-            return
+            #  try to get the navigation data. This call will succeed if the
+            #  EK80 server is available.
+            try:
+                _ = self.client.get_navigation()
 
-        self.logger.info("Cleaning up old subscriptions...")
-        self.client.cleanup_client(quiet=True)
+            except Exception:
+                #  server is not available, we'll delay a bit and try again
+                self.retry_timer.start(self.retry_timer_interval)
+                return
 
-        self.logger.info("Creating new subscriptions...")
-        self.create_subscritions()
+            #  the get_navigation call succeeded so the server is available. We
+            #  will clean up all connections to ensure that we can connect without
+            #  issue. This is brute force and will break the connections of other
+            #  REST clients so this will need to be rethought if we're running
+            #  multiple REST clients.
+            self.logger.info("Connected. Cleaning up old subscriptions...")
+            self.client.cleanup_client(quiet=True)
+            
+            #  wait a bit to ensure that the EK80 application is fully initialized
+            self.just_connected = True
+            self.logger.info("Waiting " + str(self.CONNECT_DELAY) + 
+                    " seconds to allow EK80 application to fully initialize...")
+            self.retry_timer.start(self.CONNECT_DELAY * 1000)
 
-        self.param_timer.start()
+        else:
+            #  we've just finished our delay between connection and querying channels
+            #  set just_connected to False, create our subscriptions, and kick off the
+            #  param timer.
+            self.just_connected = False
+            
+            self.logger.info("Creating new subscriptions...")
+            self.create_subscritions()
 
+            #  start the param timer to get the polled data
+            self.param_timer.start()
+            
 
     def stop_app(self):
 
@@ -341,22 +407,22 @@ class telegram_blaster(QtCore.QObject):
     def get_gl_telegram(self,  lat,  lon,  postion_time):
         '''
         get_gl_telegram returns a byte array containing an EK500 GL telegram
-        containing the provided lat, lon, and time.
+        containing the provided lat, lon, and time. The GL telegram string is
+        in the form LLMM.MMMM,N,LLLMM.MMMM,W
         '''
 
-        #  what goes into the position string of a GL telegram can vary based on ???
-        #  I assumed it was a NMEA GPGLL or GPGGA string and some systems may have
-        #  output that. We just copied the output of the EK60 which is:
-        #       LLMM.MMMM,N,LLLMM.MMMM,W
-        #
+        #  split the position strings
+        lat_split = str.split(str(lat), '.')
+        lon_split = str.split(str(abs(lon)), '.')
 
-        #  get the degrees as a string
-        lat_deg = str.split(str(lat), '.')[0]
-        lon_deg = str.split(str(abs(lon)), '.')[0]
+        #  get the degrees
+        lat_deg = lat_split[0].zfill(2)
+        lon_deg = lon_split[0].zfill(3)
 
-        #  convert the rest to MM.MM
-        lat_mm = '%4.4f' % (divmod(lat, 1)[1] * 60)
-        lon_mm = '%5.4f' % (divmod(lon, 1)[1] * 60)
+        #  convert the rest to decimal minutes (MM.MMMM)
+        #  zero pad result to ensure decimal minute string is 7 chars long
+        lat_mm = '%07.4f' % (float('.' + lat_split[1]) * 60)
+        lon_mm = '%07.4f' % (float('.' + lon_split[1]) * 60)
 
         #  and assign W/N as needed
         lat_loc = 'N' if lat >= 0 else 'S'
@@ -385,7 +451,7 @@ class telegram_blaster(QtCore.QObject):
             header_time = self.get_header_time(data['pingTime'])
 
             #  check if we should emit a VL telegram - we do this only once per ping
-            if self.last_vl_ping != data['pingNumber']:
+            if self.last_vl_ping != data['pingNumber'] and 'vesselLogDistance' in data:
                 #  this is a new ping - send VL
                 header_bytes = bytes(('VL,' +header_time+ ','+header_date+', '), 'utf-8')
                 dist_bytes = struct.pack('f', data['vesselLogDistance'])

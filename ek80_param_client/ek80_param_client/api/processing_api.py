@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -33,12 +33,12 @@ class ProcessingApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def processing_get_adcp_processing_setting(self, channel_name, **kwargs):  # noqa: E501
+    def processing_ek80_get_adcp_processing_setting(self, channel_name, **kwargs):  # noqa: E501
         """Get all adcp processing parameters for specific channel  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_get_adcp_processing_setting(channel_name, async_req=True)
+        >>> thread = api.processing_ek80_get_adcp_processing_setting(channel_name, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -49,17 +49,17 @@ class ProcessingApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.processing_get_adcp_processing_setting_with_http_info(channel_name, **kwargs)  # noqa: E501
+            return self.processing_ek80_get_adcp_processing_setting_with_http_info(channel_name, **kwargs)  # noqa: E501
         else:
-            (data) = self.processing_get_adcp_processing_setting_with_http_info(channel_name, **kwargs)  # noqa: E501
+            (data) = self.processing_ek80_get_adcp_processing_setting_with_http_info(channel_name, **kwargs)  # noqa: E501
             return data
 
-    def processing_get_adcp_processing_setting_with_http_info(self, channel_name, **kwargs):  # noqa: E501
+    def processing_ek80_get_adcp_processing_setting_with_http_info(self, channel_name, **kwargs):  # noqa: E501
         """Get all adcp processing parameters for specific channel  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_get_adcp_processing_setting_with_http_info(channel_name, async_req=True)
+        >>> thread = api.processing_ek80_get_adcp_processing_setting_with_http_info(channel_name, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -80,14 +80,14 @@ class ProcessingApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method processing_get_adcp_processing_setting" % key
+                    " to method processing_ek80_get_adcp_processing_setting" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'channel_name' is set
         if ('channel_name' not in params or
                 params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_get_adcp_processing_setting`")  # noqa: E501
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_get_adcp_processing_setting`")  # noqa: E501
 
         collection_formats = {}
 
@@ -130,12 +130,12 @@ class ProcessingApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def processing_get_adcp_processing_settings(self, **kwargs):  # noqa: E501
-        """processing_get_adcp_processing_settings  # noqa: E501
+    def processing_ek80_get_adcp_processing_settings(self, **kwargs):  # noqa: E501
+        """processing_ek80_get_adcp_processing_settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_get_adcp_processing_settings(async_req=True)
+        >>> thread = api.processing_ek80_get_adcp_processing_settings(async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -145,17 +145,17 @@ class ProcessingApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.processing_get_adcp_processing_settings_with_http_info(**kwargs)  # noqa: E501
+            return self.processing_ek80_get_adcp_processing_settings_with_http_info(**kwargs)  # noqa: E501
         else:
-            (data) = self.processing_get_adcp_processing_settings_with_http_info(**kwargs)  # noqa: E501
+            (data) = self.processing_ek80_get_adcp_processing_settings_with_http_info(**kwargs)  # noqa: E501
             return data
 
-    def processing_get_adcp_processing_settings_with_http_info(self, **kwargs):  # noqa: E501
-        """processing_get_adcp_processing_settings  # noqa: E501
+    def processing_ek80_get_adcp_processing_settings_with_http_info(self, **kwargs):  # noqa: E501
+        """processing_ek80_get_adcp_processing_settings  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_get_adcp_processing_settings_with_http_info(async_req=True)
+        >>> thread = api.processing_ek80_get_adcp_processing_settings_with_http_info(async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
@@ -175,7 +175,7 @@ class ProcessingApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method processing_get_adcp_processing_settings" % key
+                    " to method processing_ek80_get_adcp_processing_settings" % key
                 )
             params[key] = val
         del params['kwargs']
@@ -212,6 +212,1161 @@ class ProcessingApi(object):
             post_params=form_params,
             files=local_var_files,
             response_type='ProcessingAdcp',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_correlation_limit_percentage(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set correlation percentage limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_correlation_limit_percentage(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new correlation percentage limit (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_correlation_limit_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_correlation_limit_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_correlation_limit_percentage_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set correlation percentage limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_correlation_limit_percentage_with_http_info(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new correlation percentage limit (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_correlation_limit_percentage" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_correlation_limit_percentage`")  # noqa: E501
+        # verify the required parameter 'limit' is set
+        if ('limit' not in params or
+                params['limit'] is None):
+            raise ValueError("Missing the required parameter `limit` when calling `processing_ek80_set_correlation_limit_percentage`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'limit' in params:
+            body_params = params['limit']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/correlation-limit-percentage', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_error_velocity_limit(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set error velocity limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_error_velocity_limit(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new error velocity limit (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_error_velocity_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_error_velocity_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_error_velocity_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set error velocity limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_error_velocity_limit_with_http_info(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new error velocity limit (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_error_velocity_limit" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_error_velocity_limit`")  # noqa: E501
+        # verify the required parameter 'limit' is set
+        if ('limit' not in params or
+                params['limit'] is None):
+            raise ValueError("Missing the required parameter `limit` when calling `processing_ek80_set_error_velocity_limit`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'limit' in params:
+            body_params = params['limit']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/error-velocity-limit', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_error_velocity_limit_active(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate error velocity limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_error_velocity_limit_active(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_error_velocity_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_error_velocity_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_error_velocity_limit_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate error velocity limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_error_velocity_limit_active_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_error_velocity_limit_active" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_error_velocity_limit_active`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_error_velocity_limit_active`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/is-error-velocity-limit-active', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_is_correlation_limit_percentage_active(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate correlation percentage limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_is_correlation_limit_percentage_active(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_is_correlation_limit_percentage_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate correlation percentage limit  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_is_correlation_limit_percentage_active" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_is_correlation_limit_percentage_active`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_is_correlation_limit_percentage_active`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/is-correlation-limit-percentage-active', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_is_min_quality_average_data_factor_active(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate minimum quality average data factor  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_is_min_quality_average_data_factor_active(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_is_min_quality_average_data_factor_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate minimum quality average data factor  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_is_min_quality_average_data_factor_active" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_is_min_quality_average_data_factor_active`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_is_min_quality_average_data_factor_active`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/is-min-quality-average-data-factor-active', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_min_quality_average_data_percentage(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set minimum quality average data factor  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_min_quality_average_data_percentage(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new minimum quality average data factor (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_min_quality_average_data_percentage_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set minimum quality average data factor  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param float limit: The new minimum quality average data factor (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_min_quality_average_data_percentage" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_min_quality_average_data_percentage`")  # noqa: E501
+        # verify the required parameter 'limit' is set
+        if ('limit' not in params or
+                params['limit'] is None):
+            raise ValueError("Missing the required parameter `limit` when calling `processing_ek80_set_min_quality_average_data_percentage`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'limit' in params:
+            body_params = params['limit']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/min-quality-average-data-percentage', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_svd_b_high_limit(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set maximum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_high_limit(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param int limit: The new maximum limit for Sv in dB (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_svd_b_high_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_svd_b_high_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_svd_b_high_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set maximum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_high_limit_with_http_info(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param int limit: The new maximum limit for Sv in dB (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_svd_b_high_limit" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_svd_b_high_limit`")  # noqa: E501
+        # verify the required parameter 'limit' is set
+        if ('limit' not in params or
+                params['limit'] is None):
+            raise ValueError("Missing the required parameter `limit` when calling `processing_ek80_set_svd_b_high_limit`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'limit' in params:
+            body_params = params['limit']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/sv-dB-high-limit', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_svd_b_high_limit_active(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate test on maximum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_high_limit_active(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_svd_b_high_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_svd_b_high_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_svd_b_high_limit_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate test on maximum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_high_limit_active_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_svd_b_high_limit_active" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_svd_b_high_limit_active`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_svd_b_high_limit_active`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/is-sv-dB-high-limit-active', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_svd_b_low_limit(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set minimum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_low_limit(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param int limit: The new minimum limit for Sv in dB (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_svd_b_low_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_svd_b_low_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_svd_b_low_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
+        """Set minimum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_low_limit_with_http_info(channel_name, limit, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param int limit: The new minimum limit for Sv in dB (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_svd_b_low_limit" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_svd_b_low_limit`")  # noqa: E501
+        # verify the required parameter 'limit' is set
+        if ('limit' not in params or
+                params['limit'] is None):
+            raise ValueError("Missing the required parameter `limit` when calling `processing_ek80_set_svd_b_low_limit`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'limit' in params:
+            body_params = params['limit']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/sv-dB-low-limit', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_svd_b_low_limit_active(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate test on minimum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_low_limit_active(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_svd_b_low_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_svd_b_low_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_svd_b_low_limit_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Activate or deactivate test on minimum limit for Sv  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_svd_b_low_limit_active_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate (true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_svd_b_low_limit_active" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_svd_b_low_limit_active`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_svd_b_low_limit_active`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/is-sv-dB-low-limit-active', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_ek80_set_use_epoch_time(self, channel_name, active, **kwargs):  # noqa: E501
+        """Switch between PC time or epoch time from transceiver  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_use_epoch_time(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate epoch time(true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_ek80_set_use_epoch_time_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_ek80_set_use_epoch_time_with_http_info(channel_name, active, **kwargs)  # noqa: E501
+            return data
+
+    def processing_ek80_set_use_epoch_time_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
+        """Switch between PC time or epoch time from transceiver  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_ek80_set_use_epoch_time_with_http_info(channel_name, active, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :param bool active: Activate or deactivate epoch time(true/false) (required)
+        :return: None
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name', 'active']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_ek80_set_use_epoch_time" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_ek80_set_use_epoch_time`")  # noqa: E501
+        # verify the required parameter 'active' is set
+        if ('active' not in params or
+                params['active'] is None):
+            raise ValueError("Missing the required parameter `active` when calling `processing_ek80_set_use_epoch_time`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        if 'active' in params:
+            body_params = params['active']
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/adcp/use-epoch-time', 'PUT',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type=None,  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -309,6 +1464,103 @@ class ProcessingApi(object):
             post_params=form_params,
             files=local_var_files,
             response_type='bool',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=params.get('async_req'),
+            _return_http_data_only=params.get('_return_http_data_only'),
+            _preload_content=params.get('_preload_content', True),
+            _request_timeout=params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+    def processing_get_bottom_detection_settings(self, channel_name, **kwargs):  # noqa: E501
+        """Get the bottom detection settings for the specified channel  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_get_bottom_detection_settings(channel_name, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :return: SounderBottomDetection
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+        kwargs['_return_http_data_only'] = True
+        if kwargs.get('async_req'):
+            return self.processing_get_bottom_detection_settings_with_http_info(channel_name, **kwargs)  # noqa: E501
+        else:
+            (data) = self.processing_get_bottom_detection_settings_with_http_info(channel_name, **kwargs)  # noqa: E501
+            return data
+
+    def processing_get_bottom_detection_settings_with_http_info(self, channel_name, **kwargs):  # noqa: E501
+        """Get the bottom detection settings for the specified channel  # noqa: E501
+
+        This method makes a synchronous HTTP request by default. To make an
+        asynchronous HTTP request, please pass async_req=True
+        >>> thread = api.processing_get_bottom_detection_settings_with_http_info(channel_name, async_req=True)
+        >>> result = thread.get()
+
+        :param async_req bool
+        :param str channel_name: The virtual channel id (required)
+        :return: SounderBottomDetection
+                 If the method is called asynchronously,
+                 returns the request thread.
+        """
+
+        all_params = ['channel_name']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+
+        params = locals()
+        for key, val in six.iteritems(params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method processing_get_bottom_detection_settings" % key
+                )
+            params[key] = val
+        del params['kwargs']
+        # verify the required parameter 'channel_name' is set
+        if ('channel_name' not in params or
+                params['channel_name'] is None):
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_get_bottom_detection_settings`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'channel_name' in params:
+            path_params['channel_name'] = params['channel_name']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = self.api_client.select_header_accept(
+            ['application/json'])  # noqa: E501
+
+        # HTTP header `Content-Type`
+        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+            ['application/json'])  # noqa: E501
+
+        # Authentication setting
+        auth_settings = []  # noqa: E501
+
+        return self.api_client.call_api(
+            '/api/sounder/processing/{channel_name}/bottom-detection', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='SounderBottomDetection',  # noqa: E501
             auth_settings=auth_settings,
             async_req=params.get('async_req'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -736,45 +1988,45 @@ class ProcessingApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def processing_set_correlation_limit_percentage(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set correlation percentage limit  # noqa: E501
+    def processing_set_bottom_detection_settings(self, channel_name, settings, **kwargs):  # noqa: E501
+        """Set the bottom detection settings for the specified channel  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_correlation_limit_percentage(channel_name, limit, async_req=True)
+        >>> thread = api.processing_set_bottom_detection_settings(channel_name, settings, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str channel_name: The virtual channel id (required)
-        :param float limit: The new correlation percentage limit (required)
+        :param SounderBottomDetection settings: Bottom detection settings (required)
         :return: None
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.processing_set_correlation_limit_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            return self.processing_set_bottom_detection_settings_with_http_info(channel_name, settings, **kwargs)  # noqa: E501
         else:
-            (data) = self.processing_set_correlation_limit_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
+            (data) = self.processing_set_bottom_detection_settings_with_http_info(channel_name, settings, **kwargs)  # noqa: E501
             return data
 
-    def processing_set_correlation_limit_percentage_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set correlation percentage limit  # noqa: E501
+    def processing_set_bottom_detection_settings_with_http_info(self, channel_name, settings, **kwargs):  # noqa: E501
+        """Set the bottom detection settings for the specified channel  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_correlation_limit_percentage_with_http_info(channel_name, limit, async_req=True)
+        >>> thread = api.processing_set_bottom_detection_settings_with_http_info(channel_name, settings, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param str channel_name: The virtual channel id (required)
-        :param float limit: The new correlation percentage limit (required)
+        :param SounderBottomDetection settings: Bottom detection settings (required)
         :return: None
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['channel_name', 'limit']  # noqa: E501
+        all_params = ['channel_name', 'settings']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -785,18 +2037,18 @@ class ProcessingApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_correlation_limit_percentage" % key
+                    " to method processing_set_bottom_detection_settings" % key
                 )
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'channel_name' is set
         if ('channel_name' not in params or
                 params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_correlation_limit_percentage`")  # noqa: E501
-        # verify the required parameter 'limit' is set
-        if ('limit' not in params or
-                params['limit'] is None):
-            raise ValueError("Missing the required parameter `limit` when calling `processing_set_correlation_limit_percentage`")  # noqa: E501
+            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_bottom_detection_settings`")  # noqa: E501
+        # verify the required parameter 'settings' is set
+        if ('settings' not in params or
+                params['settings'] is None):
+            raise ValueError("Missing the required parameter `settings` when calling `processing_set_bottom_detection_settings`")  # noqa: E501
 
         collection_formats = {}
 
@@ -812,8 +2064,8 @@ class ProcessingApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'limit' in params:
-            body_params = params['limit']
+        if 'settings' in params:
+            body_params = params['settings']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json'])  # noqa: E501
@@ -826,1057 +2078,7 @@ class ProcessingApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/correlation-limit-percentage', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_error_velocity_limit(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set error velocity limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_error_velocity_limit(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param float limit: The new error velocity limit (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_error_velocity_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_error_velocity_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_error_velocity_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set error velocity limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_error_velocity_limit_with_http_info(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param float limit: The new error velocity limit (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'limit']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_error_velocity_limit" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_error_velocity_limit`")  # noqa: E501
-        # verify the required parameter 'limit' is set
-        if ('limit' not in params or
-                params['limit'] is None):
-            raise ValueError("Missing the required parameter `limit` when calling `processing_set_error_velocity_limit`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'limit' in params:
-            body_params = params['limit']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/error-velocity-limit', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_error_velocity_limit_0(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate error velocity limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_error_velocity_limit_0(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_error_velocity_limit_0_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_error_velocity_limit_0_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_error_velocity_limit_0_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate error velocity limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_error_velocity_limit_0_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_error_velocity_limit_0" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_error_velocity_limit_0`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_error_velocity_limit_0`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/is-error-velocity-limit-active', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_is_correlation_limit_percentage_active(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate correlation percentage limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_is_correlation_limit_percentage_active(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_is_correlation_limit_percentage_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate correlation percentage limit  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_is_correlation_limit_percentage_active_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_is_correlation_limit_percentage_active" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_is_correlation_limit_percentage_active`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_is_correlation_limit_percentage_active`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/is-correlation-limit-percentage-active', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_is_min_quality_average_data_factor_active(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate minimum quality average data factor  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_is_min_quality_average_data_factor_active(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_is_min_quality_average_data_factor_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate minimum quality average data factor  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_is_min_quality_average_data_factor_active_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_is_min_quality_average_data_factor_active" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_is_min_quality_average_data_factor_active`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_is_min_quality_average_data_factor_active`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/is-min-quality-average-data-factor-active', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_min_quality_average_data_percentage(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set minimum quality average data factor  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_min_quality_average_data_percentage(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param float limit: The new minimum quality average data factor (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_min_quality_average_data_percentage_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set minimum quality average data factor  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_min_quality_average_data_percentage_with_http_info(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param float limit: The new minimum quality average data factor (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'limit']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_min_quality_average_data_percentage" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_min_quality_average_data_percentage`")  # noqa: E501
-        # verify the required parameter 'limit' is set
-        if ('limit' not in params or
-                params['limit'] is None):
-            raise ValueError("Missing the required parameter `limit` when calling `processing_set_min_quality_average_data_percentage`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'limit' in params:
-            body_params = params['limit']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/min-quality-average-data-percentage', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_svd_b_high_limit(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set maximum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_high_limit(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param int limit: The new maximum limit for Sv in dB (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_svd_b_high_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_svd_b_high_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_svd_b_high_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set maximum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_high_limit_with_http_info(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param int limit: The new maximum limit for Sv in dB (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'limit']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_svd_b_high_limit" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_svd_b_high_limit`")  # noqa: E501
-        # verify the required parameter 'limit' is set
-        if ('limit' not in params or
-                params['limit'] is None):
-            raise ValueError("Missing the required parameter `limit` when calling `processing_set_svd_b_high_limit`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'limit' in params:
-            body_params = params['limit']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/sv-dB-high-limit', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_svd_b_high_limit_active(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate test on maximum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_high_limit_active(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_svd_b_high_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_svd_b_high_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_svd_b_high_limit_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate test on maximum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_high_limit_active_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_svd_b_high_limit_active" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_svd_b_high_limit_active`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_svd_b_high_limit_active`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/is-sv-dB-high-limit-active', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_svd_b_low_limit(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set minimum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_low_limit(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param int limit: The new minimum limit for Sv in dB (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_svd_b_low_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_svd_b_low_limit_with_http_info(channel_name, limit, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_svd_b_low_limit_with_http_info(self, channel_name, limit, **kwargs):  # noqa: E501
-        """Set minimum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_low_limit_with_http_info(channel_name, limit, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param int limit: The new minimum limit for Sv in dB (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'limit']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_svd_b_low_limit" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_svd_b_low_limit`")  # noqa: E501
-        # verify the required parameter 'limit' is set
-        if ('limit' not in params or
-                params['limit'] is None):
-            raise ValueError("Missing the required parameter `limit` when calling `processing_set_svd_b_low_limit`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'limit' in params:
-            body_params = params['limit']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/sv-dB-low-limit', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_svd_b_low_limit_active(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate test on minimum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_low_limit_active(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_svd_b_low_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_svd_b_low_limit_active_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_svd_b_low_limit_active_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Activate or deactivate test on minimum limit for Sv  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_svd_b_low_limit_active_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate (true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_svd_b_low_limit_active" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_svd_b_low_limit_active`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_svd_b_low_limit_active`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/is-sv-dB-low-limit-active', 'PUT',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type=None,  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=params.get('async_req'),
-            _return_http_data_only=params.get('_return_http_data_only'),
-            _preload_content=params.get('_preload_content', True),
-            _request_timeout=params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def processing_set_use_epoch_time(self, channel_name, active, **kwargs):  # noqa: E501
-        """Switch between PC time or epoch time from transceiver  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_use_epoch_time(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate epoch time(true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        if kwargs.get('async_req'):
-            return self.processing_set_use_epoch_time_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-        else:
-            (data) = self.processing_set_use_epoch_time_with_http_info(channel_name, active, **kwargs)  # noqa: E501
-            return data
-
-    def processing_set_use_epoch_time_with_http_info(self, channel_name, active, **kwargs):  # noqa: E501
-        """Switch between PC time or epoch time from transceiver  # noqa: E501
-
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.processing_set_use_epoch_time_with_http_info(channel_name, active, async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool
-        :param str channel_name: The virtual channel id (required)
-        :param bool active: Activate or deactivate epoch time(true/false) (required)
-        :return: None
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        all_params = ['channel_name', 'active']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        params = locals()
-        for key, val in six.iteritems(params['kwargs']):
-            if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method processing_set_use_epoch_time" % key
-                )
-            params[key] = val
-        del params['kwargs']
-        # verify the required parameter 'channel_name' is set
-        if ('channel_name' not in params or
-                params['channel_name'] is None):
-            raise ValueError("Missing the required parameter `channel_name` when calling `processing_set_use_epoch_time`")  # noqa: E501
-        # verify the required parameter 'active' is set
-        if ('active' not in params or
-                params['active'] is None):
-            raise ValueError("Missing the required parameter `active` when calling `processing_set_use_epoch_time`")  # noqa: E501
-
-        collection_formats = {}
-
-        path_params = {}
-        if 'channel_name' in params:
-            path_params['channel_name'] = params['channel_name']  # noqa: E501
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'active' in params:
-            body_params = params['active']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/api/sounder/processing/{channel_name}/adcp/use-epoch-time', 'PUT',
+            '/api/sounder/processing/{channel_name}/bottom-detection', 'PUT',
             path_params,
             query_params,
             header_params,

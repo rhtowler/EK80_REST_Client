@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **tx_geometry** | [**SectorGeometry**](SectorGeometry.md) |  | [optional] 
 **pulse** | [**PulseSetting**](PulseSetting.md) |  | [optional] 
 **channel_mode** | **str** |  | [optional] 
+**transducer_name** | **str** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -37,7 +37,8 @@ class Ping(object):
         'tx_gain': 'float',
         'tx_geometry': 'SectorGeometry',
         'pulse': 'PulseSetting',
-        'channel_mode': 'str'
+        'channel_mode': 'str',
+        'transducer_name': 'str'
     }
 
     attribute_map = {
@@ -47,10 +48,11 @@ class Ping(object):
         'tx_gain': 'tx-gain',
         'tx_geometry': 'tx-geometry',
         'pulse': 'pulse',
-        'channel_mode': 'channel-mode'
+        'channel_mode': 'channel-mode',
+        'transducer_name': 'transducer-name'
     }
 
-    def __init__(self, channel_id=None, ping_name=None, tx_power=None, tx_gain=None, tx_geometry=None, pulse=None, channel_mode=None):  # noqa: E501
+    def __init__(self, channel_id=None, ping_name=None, tx_power=None, tx_gain=None, tx_geometry=None, pulse=None, channel_mode=None, transducer_name=None):  # noqa: E501
         """Ping - a model defined in Swagger"""  # noqa: E501
 
         self._channel_id = None
@@ -60,6 +62,7 @@ class Ping(object):
         self._tx_geometry = None
         self._pulse = None
         self._channel_mode = None
+        self._transducer_name = None
         self.discriminator = None
 
         if channel_id is not None:
@@ -76,6 +79,8 @@ class Ping(object):
             self.pulse = pulse
         if channel_mode is not None:
             self.channel_mode = channel_mode
+        if transducer_name is not None:
+            self.transducer_name = transducer_name
 
     @property
     def channel_id(self):
@@ -229,6 +234,27 @@ class Ping(object):
             )
 
         self._channel_mode = channel_mode
+
+    @property
+    def transducer_name(self):
+        """Gets the transducer_name of this Ping.  # noqa: E501
+
+
+        :return: The transducer_name of this Ping.  # noqa: E501
+        :rtype: str
+        """
+        return self._transducer_name
+
+    @transducer_name.setter
+    def transducer_name(self, transducer_name):
+        """Sets the transducer_name of this Ping.
+
+
+        :param transducer_name: The transducer_name of this Ping.  # noqa: E501
+        :type: str
+        """
+
+        self._transducer_name = transducer_name
 
     def to_dict(self):
         """Returns the model properties as a dict"""

@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -122,7 +122,7 @@ class PositionInfo(object):
         :param input_status: The input_status of this PositionInfo.  # noqa: E501
         :type: str
         """
-        allowed_values = ["timeout", "ok", "degraded"]  # noqa: E501
+        allowed_values = ["timeout", "ok", "degraded", "invalid"]  # noqa: E501
         if input_status not in allowed_values:
             raise ValueError(
                 "Invalid value for `input_status` ({0}), must be one of {1}"  # noqa: E501

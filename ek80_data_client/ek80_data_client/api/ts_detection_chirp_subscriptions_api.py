@@ -3,7 +3,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -36,6 +36,7 @@ class TsDetectionChirpSubscriptionsApi(object):
     def create_ts_detection_chirp_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_chirp_subscription(specification, async_req=True)
@@ -57,6 +58,7 @@ class TsDetectionChirpSubscriptionsApi(object):
     def create_ts_detection_chirp_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_chirp_subscription_with_http_info(specification, async_req=True)

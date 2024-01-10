@@ -4,16 +4,16 @@ All URIs are relative to *http://localhost:12345*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**ownship_get_dimension**](OwnshipApi.md#ownship_get_dimension) | **GET** /api/ownship/dimension | 
-[**ownship_get_drop_keel_offset**](OwnshipApi.md#ownship_get_drop_keel_offset) | **GET** /api/ownship/manual-settings/drop-keel-offset | Get Drop keel offset
+[**ownship_get_dimension**](OwnshipApi.md#ownship_get_dimension) | **GET** /api/ownship/dimension | Get ownship dimension settings
+[**ownship_get_drop_keel_offset**](OwnshipApi.md#ownship_get_drop_keel_offset) | **GET** /api/ownship/manual-settings/drop-keel-offset | Get drop keel offset
 [**ownship_get_installed_transducers**](OwnshipApi.md#ownship_get_installed_transducers) | **GET** /api/ownship/installation/transducers | Get a list of all installed transducers
 [**ownship_get_manual_settings**](OwnshipApi.md#ownship_get_manual_settings) | **GET** /api/ownship/manual-settings | Get a list of all manual settings
 [**ownship_get_manual_speed_setting**](OwnshipApi.md#ownship_get_manual_speed_setting) | **GET** /api/ownship/manual-settings/vessel-speed | Get manual speed settings
-[**ownship_get_motion**](OwnshipApi.md#ownship_get_motion) | **GET** /api/ownship/motion | 
-[**ownship_get_navigation**](OwnshipApi.md#ownship_get_navigation) | **GET** /api/ownship/navigation | 
-[**ownship_get_ownship**](OwnshipApi.md#ownship_get_ownship) | **GET** /api/ownship | 
+[**ownship_get_motion**](OwnshipApi.md#ownship_get_motion) | **GET** /api/ownship/motion | Get ownship motion settings
+[**ownship_get_navigation**](OwnshipApi.md#ownship_get_navigation) | **GET** /api/ownship/navigation | Get ownship navigation settings
+[**ownship_get_ownship**](OwnshipApi.md#ownship_get_ownship) | **GET** /api/ownship | Get ownship settings
 [**ownship_get_water_level**](OwnshipApi.md#ownship_get_water_level) | **GET** /api/ownship/manual-settings/water-level | Get water level offset
-[**ownship_set_drop_keel_offset**](OwnshipApi.md#ownship_set_drop_keel_offset) | **PUT** /api/ownship/manual-settings/drop-keel-offset | Set Drop keel offset
+[**ownship_set_drop_keel_offset**](OwnshipApi.md#ownship_set_drop_keel_offset) | **PUT** /api/ownship/manual-settings/drop-keel-offset | Set drop keel offset
 [**ownship_set_manual_speed_setting**](OwnshipApi.md#ownship_set_manual_speed_setting) | **PUT** /api/ownship/manual-settings/vessel-speed | Set manual speed setting
 [**ownship_set_transducer_installation**](OwnshipApi.md#ownship_set_transducer_installation) | **PUT** /api/ownship/installation/{transducerId} | Sets a new intallation for a given transducer
 [**ownship_set_water_level**](OwnshipApi.md#ownship_set_water_level) | **PUT** /api/ownship/manual-settings/water-level | Set water level offset
@@ -22,7 +22,7 @@ Method | HTTP request | Description
 # **ownship_get_dimension**
 > Dimension ownship_get_dimension()
 
-
+Get ownship dimension settings
 
 ### Example
 ```python
@@ -36,6 +36,7 @@ from pprint import pprint
 api_instance = ek80_param_client.OwnshipApi()
 
 try:
+    # Get ownship dimension settings
     api_response = api_instance.ownship_get_dimension()
     pprint(api_response)
 except ApiException as e:
@@ -63,7 +64,7 @@ No authorization required
 # **ownship_get_drop_keel_offset**
 > ManualSetting ownship_get_drop_keel_offset()
 
-Get Drop keel offset
+Get drop keel offset
 
 ### Example
 ```python
@@ -77,7 +78,7 @@ from pprint import pprint
 api_instance = ek80_param_client.OwnshipApi()
 
 try:
-    # Get Drop keel offset
+    # Get drop keel offset
     api_response = api_instance.ownship_get_drop_keel_offset()
     pprint(api_response)
 except ApiException as e:
@@ -231,7 +232,7 @@ No authorization required
 # **ownship_get_motion**
 > MotionData ownship_get_motion()
 
-
+Get ownship motion settings
 
 ### Example
 ```python
@@ -245,6 +246,7 @@ from pprint import pprint
 api_instance = ek80_param_client.OwnshipApi()
 
 try:
+    # Get ownship motion settings
     api_response = api_instance.ownship_get_motion()
     pprint(api_response)
 except ApiException as e:
@@ -272,7 +274,7 @@ No authorization required
 # **ownship_get_navigation**
 > NavigationData ownship_get_navigation()
 
-
+Get ownship navigation settings
 
 ### Example
 ```python
@@ -286,6 +288,7 @@ from pprint import pprint
 api_instance = ek80_param_client.OwnshipApi()
 
 try:
+    # Get ownship navigation settings
     api_response = api_instance.ownship_get_navigation()
     pprint(api_response)
 except ApiException as e:
@@ -313,7 +316,7 @@ No authorization required
 # **ownship_get_ownship**
 > Ownship ownship_get_ownship()
 
-
+Get ownship settings
 
 ### Example
 ```python
@@ -327,6 +330,7 @@ from pprint import pprint
 api_instance = ek80_param_client.OwnshipApi()
 
 try:
+    # Get ownship settings
     api_response = api_instance.ownship_get_ownship()
     pprint(api_response)
 except ApiException as e:
@@ -396,7 +400,7 @@ No authorization required
 # **ownship_set_drop_keel_offset**
 > ownship_set_drop_keel_offset(dropkeel_settings)
 
-Set Drop keel offset
+Set drop keel offset
 
 ### Example
 ```python
@@ -411,7 +415,7 @@ api_instance = ek80_param_client.OwnshipApi()
 dropkeel_settings = ek80_param_client.ManualSetting() # ManualSetting | The new offset value and IsManual flag. New value only takes effect if IsManual is true
 
 try:
-    # Set Drop keel offset
+    # Set drop keel offset
     api_instance.ownship_set_drop_keel_offset(dropkeel_settings)
 except ApiException as e:
     print("Exception when calling OwnshipApi->ownship_set_drop_keel_offset: %s\n" % e)

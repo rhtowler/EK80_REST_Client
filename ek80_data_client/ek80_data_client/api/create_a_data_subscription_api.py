@@ -3,7 +3,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -36,6 +36,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_backscatter_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_backscatter.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_backscatter_subscription(specification, async_req=True)
@@ -57,6 +58,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_backscatter_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_backscatter.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_backscatter_subscription_with_http_info(specification, async_req=True)
@@ -133,6 +135,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_beam_data_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_beamdata.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_beam_data_subscription(specification, async_req=True)
@@ -154,6 +157,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_beam_data_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_beamdata.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_beam_data_subscription_with_http_info(specification, async_req=True)
@@ -230,6 +234,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_bottom_detector_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_bottom_detector.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_bottom_detector_subscription(specification, async_req=True)
@@ -251,6 +256,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_bottom_detector_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_bottom_detector.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_bottom_detector_subscription_with_http_info(specification, async_req=True)
@@ -327,6 +333,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_output_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_output.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_output_subscription(specification, async_req=True)
@@ -348,6 +355,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_output_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_output.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_output_subscription_with_http_info(specification, async_req=True)
@@ -424,6 +432,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_quality_factor_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_quality_factor.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_quality_factor_subscription(specification, async_req=True)
@@ -445,6 +454,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_quality_factor_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_quality_factor.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_quality_factor_subscription_with_http_info(specification, async_req=True)
@@ -521,6 +531,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_velocity_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_velocity.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_velocity_subscription(specification, async_req=True)
@@ -542,6 +553,7 @@ class CreateADataSubscriptionApi(object):
     def create_adcp_velocity_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an adcp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_adcp_velocity.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_adcp_velocity_subscription_with_http_info(specification, async_req=True)
@@ -618,6 +630,7 @@ class CreateADataSubscriptionApi(object):
     def create_bottom_detection_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a bottom detection data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_bottom_detection.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_bottom_detection_subscription(specification, async_req=True)
@@ -639,6 +652,7 @@ class CreateADataSubscriptionApi(object):
     def create_bottom_detection_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a bottom detection data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_bottom_detection.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_bottom_detection_subscription_with_http_info(specification, async_req=True)
@@ -715,6 +729,7 @@ class CreateADataSubscriptionApi(object):
     def create_echogram_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an echogram data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_echogram.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_echogram_subscription(specification, async_req=True)
@@ -736,6 +751,7 @@ class CreateADataSubscriptionApi(object):
     def create_echogram_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an echogram data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_echogram.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_echogram_subscription_with_http_info(specification, async_req=True)
@@ -812,6 +828,7 @@ class CreateADataSubscriptionApi(object):
     def create_integration_chirp_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an integration chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_integration_chirp_subscription(specification, async_req=True)
@@ -833,6 +850,7 @@ class CreateADataSubscriptionApi(object):
     def create_integration_chirp_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an integration chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_integration_chirp_subscription_with_http_info(specification, async_req=True)
@@ -909,6 +927,7 @@ class CreateADataSubscriptionApi(object):
     def create_integration_subscription(self, specification, **kwargs):  # noqa: E501
         """Create an integration data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_integration_subscription(specification, async_req=True)
@@ -930,6 +949,7 @@ class CreateADataSubscriptionApi(object):
     def create_integration_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create an integration data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_integration_subscription_with_http_info(specification, async_req=True)
@@ -1006,6 +1026,7 @@ class CreateADataSubscriptionApi(object):
     def create_noise_spectrum_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a noise spectrum data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_noise_spectrum.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_noise_spectrum_subscription(specification, async_req=True)
@@ -1027,6 +1048,7 @@ class CreateADataSubscriptionApi(object):
     def create_noise_spectrum_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a noise spectrum data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_noise_spectrum.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_noise_spectrum_subscription_with_http_info(specification, async_req=True)
@@ -1103,6 +1125,7 @@ class CreateADataSubscriptionApi(object):
     def create_sample_data_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a processed sample-data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_sample_data.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_sample_data_subscription(specification, async_req=True)
@@ -1124,6 +1147,7 @@ class CreateADataSubscriptionApi(object):
     def create_sample_data_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a processed sample-data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_sample_data.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_sample_data_subscription_with_http_info(specification, async_req=True)
@@ -1200,6 +1224,7 @@ class CreateADataSubscriptionApi(object):
     def create_system_state_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a system state data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_system_state.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_system_state_subscription(specification, async_req=True)
@@ -1221,6 +1246,7 @@ class CreateADataSubscriptionApi(object):
     def create_system_state_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a system state data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_system_state.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_system_state_subscription_with_http_info(specification, async_req=True)
@@ -1297,6 +1323,7 @@ class CreateADataSubscriptionApi(object):
     def create_targets_echogram_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a targets echogram data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_targets_echogram.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_targets_echogram_subscription(specification, async_req=True)
@@ -1318,6 +1345,7 @@ class CreateADataSubscriptionApi(object):
     def create_targets_echogram_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a targets echogram data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_targets_echogram.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_targets_echogram_subscription_with_http_info(specification, async_req=True)
@@ -1394,6 +1422,7 @@ class CreateADataSubscriptionApi(object):
     def create_targets_integration_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a targets integration data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_targets_integration_subscription(specification, async_req=True)
@@ -1415,6 +1444,7 @@ class CreateADataSubscriptionApi(object):
     def create_targets_integration_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a targets integration data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_integration.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_targets_integration_subscription_with_http_info(specification, async_req=True)
@@ -1491,6 +1521,7 @@ class CreateADataSubscriptionApi(object):
     def create_ts_detection_chirp_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_chirp_subscription(specification, async_req=True)
@@ -1512,6 +1543,7 @@ class CreateADataSubscriptionApi(object):
     def create_ts_detection_chirp_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection chirp data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection_chirp.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_chirp_subscription_with_http_info(specification, async_req=True)
@@ -1588,6 +1620,7 @@ class CreateADataSubscriptionApi(object):
     def create_ts_detection_subscription(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_subscription(specification, async_req=True)
@@ -1609,6 +1642,7 @@ class CreateADataSubscriptionApi(object):
     def create_ts_detection_subscription_with_http_info(self, specification, **kwargs):  # noqa: E501
         """Create a ts detection data subscription  # noqa: E501
 
+        Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection.html\" target=\"foo\">parameter description</a>.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.create_ts_detection_subscription_with_http_info(specification, async_req=True)

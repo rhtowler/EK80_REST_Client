@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -108,6 +108,7 @@ class PulseSettings(object):
     def pulse_duration(self):
         """Gets the pulse_duration of this PulseSettings.  # noqa: E501
 
+        The pulse duration in seconds. Valid values depends on pulse type, frequency and transducer.  # noqa: E501
 
         :return: The pulse_duration of this PulseSettings.  # noqa: E501
         :rtype: float
@@ -118,6 +119,7 @@ class PulseSettings(object):
     def pulse_duration(self, pulse_duration):
         """Sets the pulse_duration of this PulseSettings.
 
+        The pulse duration in seconds. Valid values depends on pulse type, frequency and transducer.  # noqa: E501
 
         :param pulse_duration: The pulse_duration of this PulseSettings.  # noqa: E501
         :type: float
@@ -198,6 +200,7 @@ class PulseSettings(object):
     def ramping(self):
         """Gets the ramping of this PulseSettings.  # noqa: E501
 
+        Ramping for selected pulse type, Fast or slow. Sets tapering and slope.  # noqa: E501
 
         :return: The ramping of this PulseSettings.  # noqa: E501
         :rtype: str
@@ -208,6 +211,7 @@ class PulseSettings(object):
     def ramping(self, ramping):
         """Sets the ramping of this PulseSettings.
 
+        Ramping for selected pulse type, Fast or slow. Sets tapering and slope.  # noqa: E501
 
         :param ramping: The ramping of this PulseSettings.  # noqa: E501
         :type: str
@@ -225,6 +229,7 @@ class PulseSettings(object):
     def filter_type(self):
         """Gets the filter_type of this PulseSettings.  # noqa: E501
 
+        Selected filter type as string  # noqa: E501
 
         :return: The filter_type of this PulseSettings.  # noqa: E501
         :rtype: str
@@ -235,6 +240,7 @@ class PulseSettings(object):
     def filter_type(self, filter_type):
         """Sets the filter_type of this PulseSettings.
 
+        Selected filter type as string  # noqa: E501
 
         :param filter_type: The filter_type of this PulseSettings.  # noqa: E501
         :type: str

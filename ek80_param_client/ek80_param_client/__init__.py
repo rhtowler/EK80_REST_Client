@@ -5,7 +5,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -35,12 +35,15 @@ from ek80_param_client.api_client import ApiClient
 from ek80_param_client.configuration import Configuration
 # import models into sdk package
 from ek80_param_client.models.adcp_configuration_ec150 import AdcpConfigurationEc150
+from ek80_param_client.models.adcp_transducer_capabilities import AdcpTransducerCapabilities
 from ek80_param_client.models.advanced_sequencing_settings import AdvancedSequencingSettings
 from ek80_param_client.models.angle_offset import AngleOffset
 from ek80_param_client.models.angle_sensitivity import AngleSensitivity
 from ek80_param_client.models.application_details import ApplicationDetails
+from ek80_param_client.models.array_transducer_capabilities import ArrayTransducerCapabilities
 from ek80_param_client.models.available_sensor import AvailableSensor
 from ek80_param_client.models.beam_axes import BeamAxes
+from ek80_param_client.models.channel_ping_configuration import ChannelPingConfiguration
 from ek80_param_client.models.configured_sensor_definition import ConfiguredSensorDefinition
 from ek80_param_client.models.data_output import DataOutput
 from ek80_param_client.models.dimension import Dimension
@@ -87,6 +90,9 @@ from ek80_param_client.models.sector_geometry import SectorGeometry
 from ek80_param_client.models.sector_opening import SectorOpening
 from ek80_param_client.models.sequence import Sequence
 from ek80_param_client.models.sequence_ensemble import SequenceEnsemble
+from ek80_param_client.models.single_split_transducer_capabilities import SingleSplitTransducerCapabilities
+from ek80_param_client.models.single_transducer_capabilities import SingleTransducerCapabilities
+from ek80_param_client.models.sounder_bottom_detection import SounderBottomDetection
 from ek80_param_client.models.transceiver_capabilities import TransceiverCapabilities
 from ek80_param_client.models.transducer import Transducer
 from ek80_param_client.models.transducer_capabilities import TransducerCapabilities

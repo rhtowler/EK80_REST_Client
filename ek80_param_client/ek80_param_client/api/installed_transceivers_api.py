@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -33,43 +33,43 @@ class InstalledTransceiversApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def echo_sounder_transducers_get_acoustic_source(self, acoustic_source, **kwargs):  # noqa: E501
+    def echo_sounder_transducers_get_acoustic_source_by_channel_id(self, channelid, **kwargs):  # noqa: E501
         """Get information about a specific installed transceiver  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.echo_sounder_transducers_get_acoustic_source(acoustic_source, async_req=True)
+        >>> thread = api.echo_sounder_transducers_get_acoustic_source_by_channel_id(channelid, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param str acoustic_source: The virtual channel id (required)
+        :param str channelid: The virtual channel id (required)
         :return: EchoSounderTransducer
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.echo_sounder_transducers_get_acoustic_source_with_http_info(acoustic_source, **kwargs)  # noqa: E501
+            return self.echo_sounder_transducers_get_acoustic_source_by_channel_id_with_http_info(channelid, **kwargs)  # noqa: E501
         else:
-            (data) = self.echo_sounder_transducers_get_acoustic_source_with_http_info(acoustic_source, **kwargs)  # noqa: E501
+            (data) = self.echo_sounder_transducers_get_acoustic_source_by_channel_id_with_http_info(channelid, **kwargs)  # noqa: E501
             return data
 
-    def echo_sounder_transducers_get_acoustic_source_with_http_info(self, acoustic_source, **kwargs):  # noqa: E501
+    def echo_sounder_transducers_get_acoustic_source_by_channel_id_with_http_info(self, channelid, **kwargs):  # noqa: E501
         """Get information about a specific installed transceiver  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.echo_sounder_transducers_get_acoustic_source_with_http_info(acoustic_source, async_req=True)
+        >>> thread = api.echo_sounder_transducers_get_acoustic_source_by_channel_id_with_http_info(channelid, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param str acoustic_source: The virtual channel id (required)
+        :param str channelid: The virtual channel id (required)
         :return: EchoSounderTransducer
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['acoustic_source']  # noqa: E501
+        all_params = ['channelid']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -80,20 +80,20 @@ class InstalledTransceiversApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method echo_sounder_transducers_get_acoustic_source" % key
+                    " to method echo_sounder_transducers_get_acoustic_source_by_channel_id" % key
                 )
             params[key] = val
         del params['kwargs']
-        # verify the required parameter 'acoustic_source' is set
-        if ('acoustic_source' not in params or
-                params['acoustic_source'] is None):
-            raise ValueError("Missing the required parameter `acoustic_source` when calling `echo_sounder_transducers_get_acoustic_source`")  # noqa: E501
+        # verify the required parameter 'channelid' is set
+        if ('channelid' not in params or
+                params['channelid'] is None):
+            raise ValueError("Missing the required parameter `channelid` when calling `echo_sounder_transducers_get_acoustic_source_by_channel_id`")  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'acoustic_source' in params:
-            path_params['acousticSource'] = params['acoustic_source']  # noqa: E501
+        if 'channelid' in params:
+            path_params['channelid'] = params['channelid']  # noqa: E501
 
         query_params = []
 
@@ -115,7 +115,7 @@ class InstalledTransceiversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/sounder/installed-transceivers/{acousticSource}', 'GET',
+            '/api/sounder/installed-transceivers/{channelid}', 'GET',
             path_params,
             query_params,
             header_params,
@@ -130,43 +130,43 @@ class InstalledTransceiversApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def echo_sounder_transducers_get_acoustic_source_0(self, index, **kwargs):  # noqa: E501
+    def echo_sounder_transducers_get_acoustic_source_by_channel_index(self, channellistindex, **kwargs):  # noqa: E501
         """Get information about a specific installed transceiver  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.echo_sounder_transducers_get_acoustic_source_0(index, async_req=True)
+        >>> thread = api.echo_sounder_transducers_get_acoustic_source_by_channel_index(channellistindex, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param int index: The virtual channel id (required)
+        :param int channellistindex: The channel list index (required)
         :return: EchoSounderTransducer
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.echo_sounder_transducers_get_acoustic_source_0_with_http_info(index, **kwargs)  # noqa: E501
+            return self.echo_sounder_transducers_get_acoustic_source_by_channel_index_with_http_info(channellistindex, **kwargs)  # noqa: E501
         else:
-            (data) = self.echo_sounder_transducers_get_acoustic_source_0_with_http_info(index, **kwargs)  # noqa: E501
+            (data) = self.echo_sounder_transducers_get_acoustic_source_by_channel_index_with_http_info(channellistindex, **kwargs)  # noqa: E501
             return data
 
-    def echo_sounder_transducers_get_acoustic_source_0_with_http_info(self, index, **kwargs):  # noqa: E501
+    def echo_sounder_transducers_get_acoustic_source_by_channel_index_with_http_info(self, channellistindex, **kwargs):  # noqa: E501
         """Get information about a specific installed transceiver  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.echo_sounder_transducers_get_acoustic_source_0_with_http_info(index, async_req=True)
+        >>> thread = api.echo_sounder_transducers_get_acoustic_source_by_channel_index_with_http_info(channellistindex, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param int index: The virtual channel id (required)
+        :param int channellistindex: The channel list index (required)
         :return: EchoSounderTransducer
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['index']  # noqa: E501
+        all_params = ['channellistindex']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -177,20 +177,20 @@ class InstalledTransceiversApi(object):
             if key not in all_params:
                 raise TypeError(
                     "Got an unexpected keyword argument '%s'"
-                    " to method echo_sounder_transducers_get_acoustic_source_0" % key
+                    " to method echo_sounder_transducers_get_acoustic_source_by_channel_index" % key
                 )
             params[key] = val
         del params['kwargs']
-        # verify the required parameter 'index' is set
-        if ('index' not in params or
-                params['index'] is None):
-            raise ValueError("Missing the required parameter `index` when calling `echo_sounder_transducers_get_acoustic_source_0`")  # noqa: E501
+        # verify the required parameter 'channellistindex' is set
+        if ('channellistindex' not in params or
+                params['channellistindex'] is None):
+            raise ValueError("Missing the required parameter `channellistindex` when calling `echo_sounder_transducers_get_acoustic_source_by_channel_index`")  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'index' in params:
-            path_params['index'] = params['index']  # noqa: E501
+        if 'channellistindex' in params:
+            path_params['channellistindex'] = params['channellistindex']  # noqa: E501
 
         query_params = []
 
@@ -212,7 +212,7 @@ class InstalledTransceiversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/api/sounder/installed-transceivers/{index}', 'GET',
+            '/api/sounder/installed-transceivers/{channellistindex}', 'GET',
             path_params,
             query_params,
             header_params,

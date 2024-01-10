@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -38,7 +38,8 @@ class MainStorageSettings(object):
         'sample_range': 'int',
         'sample_range_auto': 'bool',
         'individual_range_control': 'bool',
-        'record_raw_active': 'bool'
+        'record_raw_active': 'bool',
+        'sample_data_format_wbt_cw': 'str'
     }
 
     attribute_map = {
@@ -49,10 +50,11 @@ class MainStorageSettings(object):
         'sample_range': 'sample-range',
         'sample_range_auto': 'sample-range-auto',
         'individual_range_control': 'individual-range-control',
-        'record_raw_active': 'record-raw-active'
+        'record_raw_active': 'record-raw-active',
+        'sample_data_format_wbt_cw': 'sample-data-format-wbt-cw'
     }
 
-    def __init__(self, file_path=None, raw_file_name_prefix=None, max_file_size=None, min_free_disk_space=None, sample_range=None, sample_range_auto=None, individual_range_control=None, record_raw_active=None):  # noqa: E501
+    def __init__(self, file_path=None, raw_file_name_prefix=None, max_file_size=None, min_free_disk_space=None, sample_range=None, sample_range_auto=None, individual_range_control=None, record_raw_active=None, sample_data_format_wbt_cw=None):  # noqa: E501
         """MainStorageSettings - a model defined in Swagger"""  # noqa: E501
 
         self._file_path = None
@@ -63,6 +65,7 @@ class MainStorageSettings(object):
         self._sample_range_auto = None
         self._individual_range_control = None
         self._record_raw_active = None
+        self._sample_data_format_wbt_cw = None
         self.discriminator = None
 
         if file_path is not None:
@@ -81,6 +84,8 @@ class MainStorageSettings(object):
             self.individual_range_control = individual_range_control
         if record_raw_active is not None:
             self.record_raw_active = record_raw_active
+        if sample_data_format_wbt_cw is not None:
+            self.sample_data_format_wbt_cw = sample_data_format_wbt_cw
 
     @property
     def file_path(self):
@@ -249,6 +254,33 @@ class MainStorageSettings(object):
         """
 
         self._record_raw_active = record_raw_active
+
+    @property
+    def sample_data_format_wbt_cw(self):
+        """Gets the sample_data_format_wbt_cw of this MainStorageSettings.  # noqa: E501
+
+
+        :return: The sample_data_format_wbt_cw of this MainStorageSettings.  # noqa: E501
+        :rtype: str
+        """
+        return self._sample_data_format_wbt_cw
+
+    @sample_data_format_wbt_cw.setter
+    def sample_data_format_wbt_cw(self, sample_data_format_wbt_cw):
+        """Sets the sample_data_format_wbt_cw of this MainStorageSettings.
+
+
+        :param sample_data_format_wbt_cw: The sample_data_format_wbt_cw of this MainStorageSettings.  # noqa: E501
+        :type: str
+        """
+        allowed_values = ["complex", "power-angle", "power-angle-decimated"]  # noqa: E501
+        if sample_data_format_wbt_cw not in allowed_values:
+            raise ValueError(
+                "Invalid value for `sample_data_format_wbt_cw` ({0}), must be one of {1}"  # noqa: E501
+                .format(sample_data_format_wbt_cw, allowed_values)
+            )
+
+        self._sample_data_format_wbt_cw = sample_data_format_wbt_cw
 
     def to_dict(self):
         """Returns the model properties as a dict"""

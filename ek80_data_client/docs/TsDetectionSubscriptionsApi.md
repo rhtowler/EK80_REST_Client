@@ -16,6 +16,8 @@ Method | HTTP request | Description
 
 Create a ts detection data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_ts_detection.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function

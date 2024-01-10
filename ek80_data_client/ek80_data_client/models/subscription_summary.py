@@ -3,7 +3,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -36,7 +36,8 @@ class SubscriptionSummary(object):
         'status': 'str',
         'subscription_name': 'str',
         'subscriber_name': 'str',
-        'additional_info': 'str'
+        'additional_info': 'str',
+        'end_point_ids': 'str'
     }
 
     attribute_map = {
@@ -45,10 +46,11 @@ class SubscriptionSummary(object):
         'status': 'status',
         'subscription_name': 'subscription-name',
         'subscriber_name': 'subscriber-name',
-        'additional_info': 'additional-info'
+        'additional_info': 'additional-info',
+        'end_point_ids': 'end-point-ids'
     }
 
-    def __init__(self, subscription_type=None, subscription_id=None, status=None, subscription_name=None, subscriber_name=None, additional_info=None):  # noqa: E501
+    def __init__(self, subscription_type=None, subscription_id=None, status=None, subscription_name=None, subscriber_name=None, additional_info=None, end_point_ids=None):  # noqa: E501
         """SubscriptionSummary - a model defined in Swagger"""  # noqa: E501
 
         self._subscription_type = None
@@ -57,6 +59,7 @@ class SubscriptionSummary(object):
         self._subscription_name = None
         self._subscriber_name = None
         self._additional_info = None
+        self._end_point_ids = None
         self.discriminator = None
 
         if subscription_type is not None:
@@ -71,6 +74,8 @@ class SubscriptionSummary(object):
             self.subscriber_name = subscriber_name
         if additional_info is not None:
             self.additional_info = additional_info
+        if end_point_ids is not None:
+            self.end_point_ids = end_point_ids
 
     @property
     def subscription_type(self):
@@ -197,6 +202,27 @@ class SubscriptionSummary(object):
         """
 
         self._additional_info = additional_info
+
+    @property
+    def end_point_ids(self):
+        """Gets the end_point_ids of this SubscriptionSummary.  # noqa: E501
+
+
+        :return: The end_point_ids of this SubscriptionSummary.  # noqa: E501
+        :rtype: str
+        """
+        return self._end_point_ids
+
+    @end_point_ids.setter
+    def end_point_ids(self, end_point_ids):
+        """Sets the end_point_ids of this SubscriptionSummary.
+
+
+        :param end_point_ids: The end_point_ids of this SubscriptionSummary.  # noqa: E501
+        :type: str
+        """
+
+        self._end_point_ids = end_point_ids
 
     def to_dict(self):
         """Returns the model properties as a dict"""

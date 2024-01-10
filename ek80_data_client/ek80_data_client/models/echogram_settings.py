@@ -3,7 +3,7 @@
 """
     REST API for setting up data subscriptions on the EK80 Echo Sounder
 
-    The API, and the documentation of it, is currently under construction and is subject to change without further notice  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point    A link example, [kongsberg.com](http://www.kongsberg.com).  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # How to start data output  1. Create a subscription  2. Create a communication end point  3. Add the subscription to the communication end point      # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -45,7 +45,10 @@ class EchogramSettings(object):
         'echogram_ping_filter_state': 'int',
         'echogram_min_pixel_value': 'float',
         'echogram_transducer_depth': 'int',
-        'echogram_delay': 'int'
+        'echogram_delay': 'int',
+        'echogram_temporal_average': 'float',
+        'echogram_stop_at_bottom': 'bool',
+        'echogram_bottom_margin': 'float'
     }
 
     attribute_map = {
@@ -63,10 +66,13 @@ class EchogramSettings(object):
         'echogram_ping_filter_state': 'echogram-ping-filter-state',
         'echogram_min_pixel_value': 'echogram-min-pixel-value',
         'echogram_transducer_depth': 'echogram-transducer-depth',
-        'echogram_delay': 'echogram-delay'
+        'echogram_delay': 'echogram-delay',
+        'echogram_temporal_average': 'echogram-temporal-average',
+        'echogram_stop_at_bottom': 'echogram-stop-at-bottom',
+        'echogram_bottom_margin': 'echogram-bottom-margin'
     }
 
-    def __init__(self, pixel_count=500.0, range=100.0, range_start=0.0, tvg_function=20.0, bottom_gain=0.0, tvg_type='sv', bottom_tvg_type='none', echogram_type='surface', compression_type='mean', expansion_type='interpolate', echogram_heave=1, echogram_ping_filter_state=0, echogram_min_pixel_value=-100.0, echogram_transducer_depth=1, echogram_delay=1):  # noqa: E501
+    def __init__(self, pixel_count=500.0, range=100.0, range_start=0.0, tvg_function=20.0, bottom_gain=0.0, tvg_type='sv', bottom_tvg_type='none', echogram_type='surface', compression_type='mean', expansion_type='interpolate', echogram_heave=1, echogram_ping_filter_state=0, echogram_min_pixel_value=-100.0, echogram_transducer_depth=1, echogram_delay=1, echogram_temporal_average=-1.0, echogram_stop_at_bottom=False, echogram_bottom_margin=0.5):  # noqa: E501
         """EchogramSettings - a model defined in Swagger"""  # noqa: E501
 
         self._pixel_count = None
@@ -84,6 +90,9 @@ class EchogramSettings(object):
         self._echogram_min_pixel_value = None
         self._echogram_transducer_depth = None
         self._echogram_delay = None
+        self._echogram_temporal_average = None
+        self._echogram_stop_at_bottom = None
+        self._echogram_bottom_margin = None
         self.discriminator = None
 
         self.pixel_count = pixel_count
@@ -114,6 +123,12 @@ class EchogramSettings(object):
             self.echogram_transducer_depth = echogram_transducer_depth
         if echogram_delay is not None:
             self.echogram_delay = echogram_delay
+        if echogram_temporal_average is not None:
+            self.echogram_temporal_average = echogram_temporal_average
+        if echogram_stop_at_bottom is not None:
+            self.echogram_stop_at_bottom = echogram_stop_at_bottom
+        if echogram_bottom_margin is not None:
+            self.echogram_bottom_margin = echogram_bottom_margin
 
     @property
     def pixel_count(self):
@@ -503,6 +518,77 @@ class EchogramSettings(object):
             raise ValueError("Invalid value for `echogram_delay`, must be a value greater than or equal to `0`")  # noqa: E501
 
         self._echogram_delay = echogram_delay
+
+    @property
+    def echogram_temporal_average(self):
+        """Gets the echogram_temporal_average of this EchogramSettings.  # noqa: E501
+
+
+        :return: The echogram_temporal_average of this EchogramSettings.  # noqa: E501
+        :rtype: float
+        """
+        return self._echogram_temporal_average
+
+    @echogram_temporal_average.setter
+    def echogram_temporal_average(self, echogram_temporal_average):
+        """Sets the echogram_temporal_average of this EchogramSettings.
+
+
+        :param echogram_temporal_average: The echogram_temporal_average of this EchogramSettings.  # noqa: E501
+        :type: float
+        """
+        if echogram_temporal_average is not None and echogram_temporal_average > 20:  # noqa: E501
+            raise ValueError("Invalid value for `echogram_temporal_average`, must be a value less than or equal to `20`")  # noqa: E501
+        if echogram_temporal_average is not None and echogram_temporal_average < -2:  # noqa: E501
+            raise ValueError("Invalid value for `echogram_temporal_average`, must be a value greater than or equal to `-2`")  # noqa: E501
+
+        self._echogram_temporal_average = echogram_temporal_average
+
+    @property
+    def echogram_stop_at_bottom(self):
+        """Gets the echogram_stop_at_bottom of this EchogramSettings.  # noqa: E501
+
+
+        :return: The echogram_stop_at_bottom of this EchogramSettings.  # noqa: E501
+        :rtype: bool
+        """
+        return self._echogram_stop_at_bottom
+
+    @echogram_stop_at_bottom.setter
+    def echogram_stop_at_bottom(self, echogram_stop_at_bottom):
+        """Sets the echogram_stop_at_bottom of this EchogramSettings.
+
+
+        :param echogram_stop_at_bottom: The echogram_stop_at_bottom of this EchogramSettings.  # noqa: E501
+        :type: bool
+        """
+
+        self._echogram_stop_at_bottom = echogram_stop_at_bottom
+
+    @property
+    def echogram_bottom_margin(self):
+        """Gets the echogram_bottom_margin of this EchogramSettings.  # noqa: E501
+
+
+        :return: The echogram_bottom_margin of this EchogramSettings.  # noqa: E501
+        :rtype: float
+        """
+        return self._echogram_bottom_margin
+
+    @echogram_bottom_margin.setter
+    def echogram_bottom_margin(self, echogram_bottom_margin):
+        """Sets the echogram_bottom_margin of this EchogramSettings.
+
+
+        :param echogram_bottom_margin: The echogram_bottom_margin of this EchogramSettings.  # noqa: E501
+        :type: float
+        """
+        if echogram_bottom_margin is not None and echogram_bottom_margin > 20:  # noqa: E501
+            raise ValueError("Invalid value for `echogram_bottom_margin`, must be a value less than or equal to `20`")  # noqa: E501
+        if echogram_bottom_margin is not None and echogram_bottom_margin < -10:  # noqa: E501
+            raise ValueError("Invalid value for `echogram_bottom_margin`, must be a value greater than or equal to `-10`")  # noqa: E501
+
+        self._echogram_bottom_margin = echogram_bottom_margin
 
     def to_dict(self):
         """Returns the model properties as a dict"""

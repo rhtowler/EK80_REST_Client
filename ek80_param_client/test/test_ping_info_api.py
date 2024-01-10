@@ -3,7 +3,7 @@
 """
     REST API for the EK80 Echo Sounder
 
-    This API is for internal Simrad/Kongsberg Maritime use only.  The API, and the documentation of it, is currently under construction and is subject to change without further notice  # noqa: E501
+    The API, and the documentation of it, is still under construction. Feel free to experiment with it, but Kongsberg is only able to provide very limited support at the moment.  # noqa: E501
 
     OpenAPI spec version: v1
     
@@ -32,6 +32,14 @@ class TestPingInfoApi(unittest.TestCase):
     def test_executed_pings_get_executed_ping(self):
         """Test case for executed_pings_get_executed_ping
 
+        Get information about all the executed channel pings  # noqa: E501
+        """
+        pass
+
+    def test_executed_pings_get_executed_ping_by_channel_id(self):
+        """Test case for executed_pings_get_executed_ping_by_channel_id
+
+        Get information about a specific executed channel ping  # noqa: E501
         """
         pass
 

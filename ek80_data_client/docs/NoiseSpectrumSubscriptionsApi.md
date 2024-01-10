@@ -16,6 +16,8 @@ Method | HTTP request | Description
 
 Create a noise spectrum data subscription
 
+Subscription online help:   <a href=\"https://simrad.online/ek80/interface_en/subscr_type_noise_spectrum.html\" target=\"foo\">parameter description</a>.
+
 ### Example
 ```python
 from __future__ import print_function

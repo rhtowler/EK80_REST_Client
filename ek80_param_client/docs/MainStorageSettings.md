@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **sample_range_auto** | **bool** |  | [optional] 
 **individual_range_control** | **bool** |  | [optional] 
 **record_raw_active** | **bool** |  | [optional] 
+**sample_data_format_wbt_cw** | **str** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
