@@ -43,7 +43,6 @@ import ek80_datagrams_v2360_pb2 as ek80_datagrams_pb2
 from PyQt5 import QtCore
 
 
-
 class ek80_rest_client(QtCore.QObject):
 
     #  set the zmq message polling interval in ms
@@ -373,7 +372,10 @@ class ek80_rest_client(QtCore.QObject):
         for endpoint_id in self.endpoints:
 
             #  check if a message is available
-            has_msg = self.endpoints[endpoint_id]['zmq_socket'].poll(timeout=0)
+            try:
+                has_msg = self.endpoints[endpoint_id]['zmq_socket'].poll(timeout=0)
+            except:
+                continue
             if has_msg == zmq.POLLIN:
                 #  a message is available - get it. The protobuf zmq messages
                 #  are multipart where the first part is the message type
@@ -485,7 +487,7 @@ class ek80_rest_client(QtCore.QObject):
                 pass
 
         #  and remove all existing endpoints - since we may be trying
-        #  to remove enpoints that don't exist, we ignore any errors
+        #  to remove endpoints that don't exist, we ignore any errors
         for endpoint_id in self.endpoints:
             try:
                 self.delete_server_endpoint(endpoint_id)

@@ -9,13 +9,16 @@ broadcasts EK500 Q Telegrams derived from these data on the network.
 This can be used to send data to Echolog500 for "liveview" applications
 where Echolog80 does not work well.
 
+Note: If this application crashes or if execution is halted, any endpoints
+it has created will remain on the EK80 server. The application is not
+sophisticated enough at this time to 
+
 
 """
 
 import struct
 import logging
 import collections
-import datetime
 import yaml
 import urllib3
 from PyQt5 import QtCore, QtNetwork
@@ -32,18 +35,23 @@ class telegram_blaster(QtCore.QObject):
     #  before the EK80 application has fully initialized resulting in an
     #  empty channel list. 
     CONNECT_DELAY = 10
+    
+    #  specify the number of datagrams to send before disconnecting in test mode
+    TEST_DATAGRAMS_LIMIT = 10
 
-    def __init__(self, config_file, clean_server=False, parent=None):
+    def __init__(self, config_file, clean_server=False, test_run=False, parent=None):
         #  initialize the superclass
         super(telegram_blaster, self).__init__(parent)
 
         #  store our command line args
         self.config_file = config_file
         self.clean_server = clean_server
+        self.test_run = test_run
 
         #  define some initial properties
         self.udp_socket = None
         self.just_connected = False
+        self.n_test_datagrams = 0
 
         #  create a timer for polling the server
         self.param_timer = QtCore.QTimer(self)
@@ -140,10 +148,11 @@ class telegram_blaster(QtCore.QObject):
         #  apps after they crash and leave their bits around on the server.
         if self.clean_server:
             self.logger.debug("Removing and cleaning up all connections on the server. (-c==True)")
-#           try:
-            self.client.cleanup_server()
-#            except:
-#                pass
+            try:
+                self.client.cleanup_server()
+            except:
+                self.logger.debug("Error cleaning up server?!?")
+                pass
 
         #  create our subscriptions
         try:
@@ -373,7 +382,6 @@ class telegram_blaster(QtCore.QObject):
 
         self.logger.debug("Client cleanup complete.")
 
-
         if self.udp_socket:
             self.udp_socket.close()
 
@@ -572,6 +580,13 @@ class telegram_blaster(QtCore.QObject):
                     (telegram_length, telegram_type,
                     client['host_address'].toString(), client['port']))
 
+        #  if we're testing, keep track of the number of telegrams sent and
+        #  exit when the number hits the limit.
+        if self.test_run:
+            self.n_test_datagrams += 1
+            if self.n_test_datagrams == self.TEST_DATAGRAMS_LIMIT:
+                self.stop_app()
+
         return sent_bytes
 
 
@@ -634,7 +649,7 @@ def exit_handler(a,b=None):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C detected. Shutting down...")
-        example_app.stop_app()
+        console_app.stop_app()
 
     return True
 
@@ -651,7 +666,7 @@ def signal_handler(*args):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C or SIGTERM/SIGHUP detected. Shutting down...")
-        example_app.stop_app()
+        console_app.stop_app()
 
     return True
 
@@ -672,6 +687,9 @@ if __name__ == '__main__':
 
     #  create a state variable to track if the user typed ctrl-c to exit
     ctrlc_pressed = False
+    
+    #  test run 
+    test_run = False
 
     #  Set up the handlers to trap ctrl-c
     if sys.platform == "win32":
@@ -691,17 +709,21 @@ if __name__ == '__main__':
             'data channels and broadcast EK500 style telegrams on the network.')
     parser.add_argument("-c", "--clean", help="Set to True to remove all server subscriptions before running.")
     parser.add_argument("-f", "--config_file", help="Specify the path to the yml configuration file.")
+    parser.add_argument("-t", "--test_run", help="Set to True to emit a limited number of telegrams and exit." +
+            " This is useful when running in an IDE where exiting using ctrl-c doesn't work.")
 
     args = parser.parse_args()
 
     if (args.clean):
         clean_server = True
+    if (args.test_run):
+        test_run = True
     if (args.config_file):
         config_file = os.path.normpath(str(args.config_file))
 
     #  create an instance of QCoreApplication and and instance of the our example application
     app = QtCore.QCoreApplication(sys.argv)
-    example_app = telegram_blaster(config_file, clean_server=clean_server,
+    console_app = telegram_blaster(config_file, clean_server=clean_server, test_run=test_run,
             parent=app)
 
     #  and start the event loop
