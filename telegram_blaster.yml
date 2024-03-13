@@ -9,23 +9,25 @@ application:
     #  telegram_blaster on the same machine the EK80 server is running
     #  on. I don't know if this is an issue with my local configuration
     #  or a limitation of the EK80 REST server.
-    ek80_server_ip: 127.0.0.1
-    
+    #ek80_server_ip: 127.0.0.1
+    ek80_server_ip: 192.168.117.37
+
     #  specify the IP address of the local interface used to transmit
     #  the datagrams. The client IPs defined below must be accessible
     #  from this interface.
-    local_udp_ip: 127.0.0.1
+    local_udp_ip: 192.168.117.208
+    #local_udp_ip: 192.168.117.208
     #  specify the local UDP port the telegrams will be sent from.
     local_udp_port: 15024
-    
+
     #  set the log level. This controls the amount of text displayed on
     #  screen when the application runs. Options are DEBUG, INFO, WARNING
-    log_level: INFO
-    
+    log_level: DEBUG
+
     #  specify the interval that the polled parameters will be requested
     #  from the server. Currently "navigation" data is the only polled param.
     polled_param_interval_ms: 1000
-    
+
     #  telegram_blaster will automatically reconnect to the EK80 server
     #  if a connection is lost. Specify the interval in ms between attempts
     #  to reconnect when this happens.
@@ -44,12 +46,12 @@ application:
 #  the telegrams to.
 clients:
     client_ips:
-        - 127.0.0.1
+        - 192.168.117.208
         #- 192.168.114.123
-        #- 192.168.117.255  # this is an example of 
+        #- 192.168.117.255  # this is an example of
     client_ports:
-        - 2002
-        #- 5001
+        #- 2002
+        - 5001
 
 
 #  here you specify the channels, and subscription and Q telegram parameters
@@ -64,19 +66,19 @@ channels:
         upper_detector_limit: 15
         lower_detector_limit: 1000
         bottom_back_step: -50.0
-        
+
         #  specify the Q telegram channel number. This must be unique and in
         #  the range from 1-9. The data will appear in Echoview as Tn where n
         #  is the value you specify here.
         q_telegram_channel: 1
-        
+
         #  specify the surface echogram start and end, in meters depth.
         surface_echogram_start: 0
         surface_echogram_range: 500
         #  specify the number of samples in the surface echogram. Note the
         #  total number of surface and bottom samples must not exceed 714
         surface_echogram_count: 550
-        
+
         #  specify the bottom echogram start. This is meters from the detected
         #  bottom. Negative values are above the bottom.
         bottom_echogram_start: -10
@@ -86,7 +88,7 @@ channels:
         #  I *think* this can be set to 0 to disable the expanded bottom.
         bottom_echogram_count: 100
 
-        
+
     WBT 978217-15 ES38-7_ES:
         #  specify the bottom detection subscription parameters for this channel.
         #  The upper and lower limit values are specified in meters depth. The
@@ -99,14 +101,14 @@ channels:
         #  the range from 1-9. The data will appear in Echoview as Tn where n
         #  is the value you specify here.
         q_telegram_channel: 2
-        
+
         #  specify the surface echogram start and end, in meters depth.
         surface_echogram_start: 0
         surface_echogram_range: 500
         #  specify the number of samples in the surface echogram. Note the
         #  total number of surface and bottom samples must not exceed 714
         surface_echogram_count: 550
-        
+
         #  specify the bottom echogram start. This is meters from the detected
         #  bottom. Negative values are above the bottom.
         bottom_echogram_start: -10
@@ -116,7 +118,7 @@ channels:
         #  I *think* this can be set to 0 to disable the expanded bottom.
         bottom_echogram_count: 100
 
-        
+
     WBT 978213-15 ES70-7C_ES:
         #  specify the bottom detection subscription parameters for this channel.
         #  The upper and lower limit values are specified in meters depth. The
@@ -129,14 +131,14 @@ channels:
         #  the range from 1-9. The data will appear in Echoview as Tn where n
         #  is the value you specify here.
         q_telegram_channel: 3
-        
+
         #  specify the surface echogram start and end, in meters depth.
         surface_echogram_start: 0
         surface_echogram_range: 500
         #  specify the number of samples in the surface echogram. Note the
         #  total number of surface and bottom samples must not exceed 714
         surface_echogram_count: 550
-        
+
         #  specify the bottom echogram start. This is meters from the detected
         #  bottom. Negative values are above the bottom.
         bottom_echogram_start: -10
@@ -159,14 +161,14 @@ channels:
         #  the range from 1-9. The data will appear in Echoview as Tn where n
         #  is the value you specify here.
         q_telegram_channel: 4
-        
+
         #  specify the surface echogram start and end, in meters depth.
         surface_echogram_start: 0
         surface_echogram_range: 500
         #  specify the number of samples in the surface echogram. Note the
         #  total number of surface and bottom samples must not exceed 714
         surface_echogram_count: 550
-        
+
         #  specify the bottom echogram start. This is meters from the detected
         #  bottom. Negative values are above the bottom.
         bottom_echogram_start: -10
@@ -189,14 +191,14 @@ channels:
         #  the range from 1-9. The data will appear in Echoview as Tn where n
         #  is the value you specify here.
         q_telegram_channel: 5
-        
+
         #  specify the surface echogram start and end, in meters depth.
         surface_echogram_start: 0
         surface_echogram_range: 500
         #  specify the number of samples in the surface echogram. Note the
         #  total number of surface and bottom samples must not exceed 714
         surface_echogram_count: 550
-        
+
         #  specify the bottom echogram start. This is meters from the detected
         #  bottom. Negative values are above the bottom.
         bottom_echogram_start: -10
@@ -219,14 +221,14 @@ channels:
 #        #  the range from 1-9. The data will appear in Echoview as Tn where n
 #        #  is the value you specify here.
 #        q_telegram_channel: 6
-#        
+#
 #        #  specify the surface echogram start and end, in meters depth.
 #        surface_echogram_start: 0
 #        surface_echogram_range: 500
 #        #  specify the number of samples in the surface echogram. Note the
 #        #  total number of surface and bottom samples must not exceed 714
 #        surface_echogram_count: 550
-#        
+#
 #        #  specify the bottom echogram start. This is meters from the detected
 #        #  bottom. Negative values are above the bottom.
 #        bottom_echogram_start: -10
@@ -254,14 +256,14 @@ channels:
 #        #  the range from 1-9. The data will appear in Echoview as Tn where n
 #        #  is the value you specify here.
 #        q_telegram_channel: 6
-#        
+#
 #        #  specify the surface echogram start and end, in meters depth.
 #        surface_echogram_start: 0
 #        surface_echogram_range: 500
 #        #  specify the number of samples in the surface echogram. Note the
 #        #  total number of surface and bottom samples must not exceed 714
 #        surface_echogram_count: 550
-#        
+#
 #        #  specify the bottom echogram start. This is meters from the detected
 #        #  bottom. Negative values are above the bottom.
 #        bottom_echogram_start: -10

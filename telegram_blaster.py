@@ -3,7 +3,7 @@ telegram_blaster.py
 
 telegram_blaster connects to an instance of the EK80 application using
 the REST interface and creates bottom depth and echogram subscriptions for
-the channels defined in the telegram_blaster.yml config file. It then 
+the channels defined in the telegram_blaster.yml config file. It then
 broadcasts EK500 Q Telegrams derived from these data on the network.
 
 This can be used to send data to Echolog500 for "liveview" applications
@@ -11,7 +11,7 @@ where Echolog80 does not work well.
 
 Note: If this application crashes or if execution is halted, any endpoints
 it has created will remain on the EK80 server. The application is not
-sophisticated enough at this time to 
+sophisticated enough at this time to
 
 
 """
@@ -27,15 +27,17 @@ import ek80_rest_client
 
 class telegram_blaster(QtCore.QObject):
 
+    #  define the blaster's signals
     stopClient = QtCore.pyqtSignal()
+    stopApp = QtCore.pyqtSignal()
 
     #  specify the delay, in seconds, between when the application connects
     #  and when it tries to create subscriptions. If telegram_blaster is
     #  already running when you start EK80, it can request the list of channels
     #  before the EK80 application has fully initialized resulting in an
-    #  empty channel list. 
+    #  empty channel list.
     CONNECT_DELAY = 10
-    
+
     #  specify the number of datagrams to send before disconnecting in test mode
     TEST_DATAGRAMS_LIMIT = 10
 
@@ -52,6 +54,9 @@ class telegram_blaster(QtCore.QObject):
         self.udp_socket = None
         self.just_connected = False
         self.n_test_datagrams = 0
+
+        #  connect the app stop signal to our stop method
+        self.stopApp.connect(self.stop_app)
 
         #  create a timer for polling the server
         self.param_timer = QtCore.QTimer(self)
@@ -130,7 +135,7 @@ class telegram_blaster(QtCore.QObject):
 
         #  set the connection retry timer interval
         self.retry_timer_interval = self.configuration['application']['lost_server_retry_interval_ms']
-        
+
         #  lastly, set the polling timer interval and start it
         self.param_timer.setInterval(self.configuration['application']['polled_param_interval_ms'])
 
@@ -152,7 +157,6 @@ class telegram_blaster(QtCore.QObject):
                 self.client.cleanup_server()
             except:
                 self.logger.debug("Error cleaning up server?!?")
-                pass
 
         #  create our subscriptions
         try:
@@ -284,8 +288,8 @@ class telegram_blaster(QtCore.QObject):
 
                 #  and then send the datagram
                 self.send_telegram(gl_bytes)
-                
-                
+
+
             #  THIS BLOCK SHOULD BE USED IN CONJUNCTION WITH A CHECK AGAINST
             #  A LIST OF SUBSCRIBED CHANNELS TO DETERMINE IF A NEW CHANNEL HAS
             #  BEEN ADDED OR ONE HAS BEEN REMOVED. ADDITIONAL CODE WILL NEED TO BE
@@ -293,13 +297,13 @@ class telegram_blaster(QtCore.QObject):
             #  THE CURRENT DESIGN ADDS ALL CHANNELS AT ONCE IN CREATE_SUBSCRIPTIONS
             #  AND THIS WILL NEED TO BE CHANGED TO ADD ONE SUBSCRIPTION AT A TIME
             #  wILL ALSO NEED TO ADD A METHOD TO REMOVE A SPECIFIC SUBSCRIPTION.
-#            #  
+#            #
 #            if len(self.channels) == 0:
 #                print("NOONAN!")
 #                self.channels = self.client.get_channels()
 #            else:
 #                print("GotChans!")
-                
+
         except urllib3.exceptions.NewConnectionError:
             print("CON ERROR")
 
@@ -345,10 +349,10 @@ class telegram_blaster(QtCore.QObject):
             #  multiple REST clients.
             self.logger.info("Connected. Cleaning up old subscriptions...")
             self.client.cleanup_client(quiet=True)
-            
+
             #  wait a bit to ensure that the EK80 application is fully initialized
             self.just_connected = True
-            self.logger.info("Waiting " + str(self.CONNECT_DELAY) + 
+            self.logger.info("Waiting " + str(self.CONNECT_DELAY) +
                     " seconds to allow EK80 application to fully initialize...")
             self.retry_timer.start(self.CONNECT_DELAY * 1000)
 
@@ -357,13 +361,13 @@ class telegram_blaster(QtCore.QObject):
             #  set just_connected to False, create our subscriptions, and kick off the
             #  param timer.
             self.just_connected = False
-            
+
             self.logger.info("Creating new subscriptions...")
             self.create_subscritions()
 
             #  start the param timer to get the polled data
             self.param_timer.start()
-            
+
 
     def stop_app(self):
 
@@ -639,6 +643,15 @@ class telegram_blaster(QtCore.QObject):
         return add_channel, config
 
 
+    def external_stop(self):
+        '''
+        external_stop is called when one of the main thread exit handlers are called.
+        It emits a stop signal that is then received by the QCoreApplication which then
+        shuts everything down in the QCoreApplication thread.
+        '''
+        self.stopApp.emit()
+
+
 def exit_handler(a,b=None):
     '''
     exit_handler is called when CTRL-c is pressed on Windows
@@ -649,7 +662,7 @@ def exit_handler(a,b=None):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C detected. Shutting down...")
-        console_app.stop_app()
+        console_app.external_stop()
 
     return True
 
@@ -666,7 +679,7 @@ def signal_handler(*args):
         #  make sure we only act on the first ctrl-c press
         ctrlc_pressed = True
         print("CTRL-C or SIGTERM/SIGHUP detected. Shutting down...")
-        console_app.stop_app()
+        console_app.external_stop()
 
     return True
 
@@ -687,8 +700,8 @@ if __name__ == '__main__':
 
     #  create a state variable to track if the user typed ctrl-c to exit
     ctrlc_pressed = False
-    
-    #  test run 
+
+    #  test run
     test_run = False
 
     #  Set up the handlers to trap ctrl-c

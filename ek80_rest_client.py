@@ -76,16 +76,23 @@ class ek80_rest_client(QtCore.QObject):
         self.next_server_port = 24240
         self.server_address = server_address
 
-        #  THIS IS A HACK - THE SWAGGER CLIENTS CAN'T CONNECT WITH A "REAL" IP
-        #  NEED TO TRY WITH FIREWALL DISABLED
-        server_address = 'localhost'
+        #  THIS IS A HACK - It appears that the URLACLs created when the EK80 Web API
+        #  is configured for localhost literally have "localhost" as the host name and thus the
+        #  host strings created below MUST use 'localhost' as the hostname. BUT - you can't
+        #  seemingly use 'localhost' as the hostname when creating an endpoint so for endpoints
+        #  we need to use 127.0.0.1. This only comes into play when the EK80 Web API access is
+        #  configured for "Echosounder PC" (i.e. localhost access only)
+        if self.server_address == '127.0.0.1':
+            server_address = 'localhost'
+        elif self.server_address == 'localhost':
+            self.server_address == '127.0.0.1'
 
         #  create instances of our ek80_data_client and ek80_parameter_clients
         self.param_client_config = ek80_param_client.Configuration()
-        self.param_client_config.host="http://" + server_address + ":" + str(param_server_port)
+        self.param_client_config.host="http://" + server_address + ":" + str(param_server_port) + "/"
         self.param_api_client = ek80_param_client.ApiClient(configuration=self.param_client_config)
         self.data_client_config = ek80_data_client.Configuration()
-        self.data_client_config.host="http://" + server_address + ":" + str(data_server_port)
+        self.data_client_config.host="http://" + server_address + ":" + str(data_server_port) + "/"
         self.data_api_client = ek80_data_client.ApiClient(configuration=self.data_client_config)
 
         #  create a timer to poll the zero-mq subscriptions
@@ -106,7 +113,7 @@ class ek80_rest_client(QtCore.QObject):
         get_navigation returns the current lat/lon, course, speed, heading, and vessel log
         '''
 
-        osa = ek80_param_client.OwnshipApi()
+        osa = ek80_param_client.OwnshipApi(self.param_api_client)
         return osa.ownship_get_navigation()
 
 
@@ -114,7 +121,7 @@ class ek80_rest_client(QtCore.QObject):
         """
         get_motion returns heave, pitch, roll, surge, sway, time, and yaw
         """
-        osa = ek80_param_client.OwnshipApi()
+        osa = ek80_param_client.OwnshipApi(self.param_api_client)
         motion_data = osa.ownship_get_motion()
 
         #convert the ping_time to a datetime
@@ -128,7 +135,7 @@ class ek80_rest_client(QtCore.QObject):
         get_drop_keel_offset returns the current drop keel setting value and a bool
         indicating the value is manually set.
         '''
-        osa = ek80_param_client.OwnshipApi()
+        osa = ek80_param_client.OwnshipApi(self.param_api_client)
         return osa.ownship_get_drop_keel_offset()
 
 
@@ -137,7 +144,7 @@ class ek80_rest_client(QtCore.QObject):
         set_drop_keel_offset sets the current drop keel value and a bool
         indicating the value is manually set.
         '''
-        osa = ek80_param_client.OwnshipApi()
+        osa = ek80_param_client.OwnshipApi(self.param_api_client)
         dropkeel_settings = ek80_param_client.ManualSetting(current_value=new_offset,
                 is_manual=True)
         osa.ownship_set_drop_keel_offset(dropkeel_settings)
